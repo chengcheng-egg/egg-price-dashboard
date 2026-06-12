@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乘乘EGG · 全国鸡蛋价格看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0f1923; --card: #162230; --card2: #1b2d40; --border: #1e3a52;
+  --accent: #ff6b35; --accent2: #ffd23f; --up: #ef4444; --down: #22c55e; --flat: #94a3b8;
+  --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+  --pink: #f472b6; --pink-bg: rgba(244,114,182,0.10); --pink-border: rgba(244,114,182,0.3);
+  --red: #ef4444; --red-bg: rgba(239,68,68,0.10); --red-border: rgba(239,68,68,0.3);
+  --blue: #3b82f6; --blue-bg: rgba(59,130,246,0.10); --blue-border: rgba(59,130,246,0.3);
+  --green: #22c55e; --green-bg: rgba(34,197,94,0.10); --green-border: rgba(34,197,94,0.3);
+  --orange: #f97316; --orange-bg: rgba(249,115,22,0.10);
+  --purple: #a855f7; --purple-bg: rgba(168,85,247,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* Header */
+.header{background:linear-gradient(135deg,#0d1b2a,#162230,#0d1b2a);border-bottom:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#0f1923;box-shadow:0 0 16px rgba(255,107,53,.3)}
+.brand{font-size:19px;font-weight:700;letter-spacing:.5px}
+.brand span{color:var(--accent)}
+.brand-sub{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.5px}
+.header-right{display:flex;align-items:center;gap:12px}
+.date-badge{background:rgba(255,107,53,0.14);color:var(--accent);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid rgba(255,107,53,.25)}
+.hdr-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,107,53,.07)}
+.update-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
+
+.container{max-width:1700px;margin:0 auto;padding:20px 20px 40px}
+
+/* Stats top bar */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:6px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;position:relative;overflow:hidden;cursor:default;transition:all .2s}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.stat-card.pink::before{background:var(--pink)}
+.stat-card.red::before{background:var(--red)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.orange::before{background:var(--orange)}
+.stat-card:hover{background:var(--card2);transform:translateY(-1px)}
+.stat-tag{font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:5px;text-transform:uppercase}
+.stat-val{font-size:26px;font-weight:800;line-height:1.1;letter-spacing:-0.5px}
+.stat-chg{font-size:11px;margin-top:4px;font-weight:600;display:flex;align-items:center;gap:3px}
+.stat-unit{font-size:11px;color:var(--text3);font-weight:400}
+
+/* Section Title */
+.sec-title{font-size:15px;font-weight:700;margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title .dot{width:4px;height:18px;border-radius:2px;flex-shrink:0}
+.sec-title .sub{font-size:11px;color:var(--text3);font-weight:400;margin-left:6px}
+.sec-title .cnt{margin-left:auto;font-size:11px;color:var(--text3);font-weight:400}
+
+/* Quote Card */
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(390px,1fr));gap:14px}
+.quote-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:visible;transition:all .2s;position:relative}
+.quote-card:hover{box-shadow:0 4px 24px rgba(0,0,0,.25);transform:translateY(-2px)}
+.quote-card.pink{border-top:3px solid var(--pink)}
+.quote-card.red{border-top:3px solid var(--red)}
+.quote-card.blue{border-top:3px solid var(--blue)}
+.quote-card.green{border-top:3px solid var(--green)}
+.quote-card.orange{border-top:3px solid var(--orange)}
+
+/* Status indicator */
+.card-status{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.card-status.fresh{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5)}
+.card-status.fresh-anim{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5);animation:pulse 2s infinite}
+.card-status.stale{background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,.4)}
+.card-status.expired{background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,.4)}
+.card-status.empty{background:#475569}
+
+.qc-header{padding:13px 16px 10px;display:flex;align-items:flex-start;justify-content:space-between}
+.qc-header-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.qc-avatar{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
+.qc-name{font-size:14px;font-weight:700;line-height:1.2}
+.qc-meta{font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+/* ===== 日期时间标签（智能状态） ===== */
+.qc-date-tag{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.2px;border:1px solid;transition:all .3s;cursor:default;white-space:nowrap}
+.qc-date-tag.today{background:rgba(34,197,94,0.12);color:#22c55e;border-color:rgba(34,197,94,0.3)}
+.qc-date-tag.yesterday{background:rgba(245,158,11,0.12);color:#f59e0b;border-color:rgba(245,158,11,0.3)}
+.qc-date-tag.old{background:rgba(239,68,68,0.10);color:#ef4444;border-color:rgba(239,68,68,0.25)}
+.qc-date-tag.default{background:rgba(255,255,255,.04);color:var(--text3);border-color:rgba(255,255,255,.06)}
+/* ===== 右上角：badge + 刷新按钮 ===== */
+.qc-header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:6px}
+.qc-badge{padding:3px 9px;border-radius:5px;font-size:10px;font-weight:600;letter-spacing:.3px;flex-shrink:0}
+.qc-badge.pink{background:var(--pink-bg);color:var(--pink);border:1px solid var(--pink-border)}
+.qc-badge.red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.qc-badge.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.qc-badge.green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.qc-badge.orange{background:var(--orange-bg);color:var(--orange);border:1px solid rgba(249,115,22,.3)}
+/* 刷新按钮 */
+.qc-refresh-btn{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;font-weight:900;line-height:1}
+.qc-refresh-btn:hover{background:rgba(255,107,53,.12);border-color:rgba(255,107,53,.35);color:var(--accent)}
+.qc-refresh-btn.spinning{animation:spinOnce .4s linear}
+@keyframes spinOnce{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* ===== 快速更新气泡 ===== */
+.quote-card{position:relative;overflow:visible !important}
+.quick-bubble{position:absolute;top:52px;right:10px;width:258px;background:#192d42;border:1px solid var(--border);border-radius:11px;box-shadow:0 10px 36px rgba(0,0,0,.55);z-index:600;padding:13px 14px;display:none}
+.quick-bubble.open{display:block;animation:bubbleIn .16s ease}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.quick-bubble::before{content:'';position:absolute;top:-6px;right:6px;width:10px;height:10px;background:#192d42;border-left:1px solid var(--border);border-top:1px solid var(--border);transform:rotate(45deg)}
+.qb-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.qb-title-dot{width:3px;height:11px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.qb-hint{font-size:9.5px;color:var(--text3);line-height:1.55;margin-bottom:10px;padding:5px 8px;background:rgba(0,0,0,.18);border-radius:5px;border-left:2px solid var(--accent)}
+.qb-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.qb-label{font-size:10px;color:var(--text3);white-space:nowrap;min-width:62px;flex-shrink:0}
+.qb-input{flex:1;background:#0f1923;border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;outline:none;transition:border-color .2s;font-family:inherit;min-width:0}
+.qb-input:focus{border-color:var(--accent)}
+.qb-footer{display:flex;gap:6px;justify-content:flex-end;margin-top:9px}
+.qb-save{padding:5px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.qb-save:hover{background:#ff8555}
+.qb-cancel{padding:5px 10px;background:rgba(255,255,255,.05);color:var(--text3);border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer}
+.qb-cancel:hover{color:var(--text2)}
+/* 时间图例 */
+.time-legend{display:flex;align-items:center;gap:14px;font-size:10px;color:var(--text3);padding:8px 0 4px;flex-wrap:wrap;margin-bottom:2px}
+.time-legend-item{display:flex;align-items:center;gap:4px}
+
+/* Price Table */
+.qc-table-wrap{overflow-x:auto}
+.qc-table{width:100%;border-collapse:collapse;min-width:300px}
+.qc-table th{padding:6px 12px;font-size:10px;color:var(--text3);text-align:center;font-weight:600;letter-spacing:.3px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15);white-space:nowrap}
+.qc-table th:first-child{text-align:left;padding-left:14px}
+.qc-table td{padding:7px 12px;font-size:13px;text-align:center;border-bottom:1px solid rgba(30,58,82,.2);transition:background .15s;white-space:nowrap}
+.qc-table td:first-child{text-align:left;font-weight:600;color:var(--text2);padding-left:14px}
+.qc-table tr:last-child td{border-bottom:none}
+.qc-table tr:hover td{background:rgba(255,255,255,.02)}
+.price{font-weight:700;font-variant-numeric:tabular-nums;color:var(--text);font-size:13px !important}
+.price-hot{color:var(--accent) !important}
+.price-main{font-size:16px !important;font-weight:800 !important}
+.change-up{color:var(--up);font-weight:700;font-size:12px}
+.change-down{color:var(--down);font-weight:700;font-size:12px}
+.change-flat{color:var(--flat);font-size:12px}
+.change-up::before{content:'▲ '}
+.change-down::before{content:'▼ '}
+
+/* Sub-group header */
+.qc-subgroup{background:rgba(255,255,255,.025);padding:5px 14px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.qc-subgroup::before{content:'';width:3px;height:10px;border-radius:2px;background:var(--text3)}
+
+/* Note */
+.qc-note{padding:7px 14px;font-size:10px;color:var(--text3);line-height:1.6;background:rgba(0,0,0,.1);border-top:1px solid rgba(30,58,82,.2)}
+
+/* Edit button */
+.qc-edit-btn{margin:8px 14px;padding:6px;width:calc(100% - 28px);background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.1);border-radius:7px;color:var(--text3);font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.qc-edit-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,107,53,.05)}
+
+/* Chart */
+.chart-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.chart-tabs{display:flex;gap:4px;background:rgba(0,0,0,.2);padding:3px;border-radius:8px}
+.chart-tab{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--text2);background:transparent;border:none;transition:all .2s;font-weight:500}
+.chart-tab.active{background:var(--accent);color:#fff;font-weight:700}
+
+/* Region Map */
+.region-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px}
+.rtable{width:100%;border-collapse:collapse}
+.rtable th{padding:9px 14px;font-size:10px;color:var(--text3);text-align:left;font-weight:600;letter-spacing:.3px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.12)}
+.rtable td{padding:9px 14px;font-size:12px;border-bottom:1px solid rgba(30,58,82,.2)}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr:hover td{background:rgba(255,107,53,.03)}
+.region-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;margin-right:3px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:#162230;border:1px solid var(--border);border-radius:16px;width:min(560px,95vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#162230;z-index:1}
+.modal-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.modal-close{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.05);border:none;color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(239,68,68,.15);color:var(--red)}
+.modal-body{padding:18px 20px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;color:var(--text3);margin-bottom:5px;display:block;font-weight:600;letter-spacing:.3px}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.form-input{width:100%;background:#0f1923;border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+.form-section-title{font-size:11px;font-weight:700;color:var(--text2);padding:8px 0 4px;border-bottom:1px solid var(--border);margin-bottom:10px;letter-spacing:.5px}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#162230;position:sticky;bottom:0}
+.btn-primary{padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:#ff8555}
+.btn-secondary{padding:8px 16px;background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{background:rgba(255,255,255,.08)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#162230;border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:2000;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success::before{content:'✓';color:var(--green);font-weight:700}
+.toast.info::before{content:'ℹ';color:var(--blue);font-weight:700}
+
+/* Footer */
+.footer{text-align:center;padding:16px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:28px}
+.footer span{color:var(--accent)}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:10px 14px;flex-wrap:wrap;gap:8px}
+  .container{padding:12px 10px 24px}
+  .quote-grid{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .stat-val{font-size:22px}
+  .form-row{grid-template-columns:1fr 1fr}
+  .brand{font-size:16px}
+}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">🥚</div>
+    <div>
+      <div class="brand">乘乘<span>EGG</span> · 全国鸡蛋价格看板</div>
+      <div class="brand-sub">数据来源：各大产区公众号报价 · 每日更新</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)">
+      <div class="update-dot"></div>已更新
+    </div>
+    <button class="hdr-btn" onclick="exportData()">📤 导出数据</button>
+    <button class="hdr-btn" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <div class="date-badge" id="headerDate">加载中...</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ========== STATS BAR ========== -->
+<div class="stats-bar">
+  <div class="stat-card pink">
+    <div class="stat-tag">馆陶粉蛋 · 45斤</div>
+    <div class="stat-val" style="color:var(--pink)" id="s-guantao">219</div>
+    <div class="stat-chg change-flat" style="color:var(--flat)">— 持平</div>
+  </div>
+  <div class="stat-card pink">
+    <div class="stat-tag">家美鲜粉蛋 · 45斤</div>
+    <div class="stat-val" style="color:var(--pink)" id="s-jiameixian">244</div>
+    <div class="stat-chg change-flat" style="color:var(--flat)">— 持平</div>
+  </div>
+  <div class="stat-card pink">
+    <div class="stat-tag">浠水粉蛋 · 45斤</div>
+    <div class="stat-val" style="color:var(--pink)" id="s-xishui">242</div>
+    <div class="stat-chg change-up">2 元/箱</div>
+  </div>
+  <div class="stat-card pink">
+    <div class="stat-tag">三尖收购价 · 45斤</div>
+    <div class="stat-val" style="color:var(--pink)" id="s-sanjian">256</div>
+    <div class="stat-chg change-up">3 元/箱</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-tag">北京主流 · 44斤</div>
+    <div class="stat-val" style="color:var(--red)" id="s-beijing">230</div>
+    <div class="stat-chg change-down">5 元/箱</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-tag">九江德安 · 45斤</div>
+    <div class="stat-val" style="color:var(--red)" id="s-dean">239</div>
+    <div class="stat-chg change-up">2 元/箱</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-tag">贵阳粉蛋 · 45斤</div>
+    <div class="stat-val" style="color:var(--green)" id="s-guiyang">233</div>
+    <div class="stat-chg change-up">5 元/箱</div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-tag">全国均价</div>
+    <div class="stat-val" style="color:var(--orange)" id="s-avg">5.15</div>
+    <div class="stat-chg change-down">0.06 <span class="stat-unit">元/斤</span></div>
+  </div>
+</div>
+
+<!-- 时间状态图例 -->
+<div class="time-legend">
+  <div class="time-legend-item"><div class="card-status fresh-anim" style="margin:0"></div> 今日已更新</div>
+  <div class="time-legend-item"><div class="card-status stale" style="margin:0"></div> 昨日报价</div>
+  <div class="time-legend-item"><div class="card-status expired" style="margin:0"></div> 超过2天</div>
+  <div class="time-legend-item"><div class="card-status empty" style="margin:0"></div> 暂无录入</div>
+  <span style="margin-left:auto;font-size:9px;color:var(--text3)">💡 点卡片右上角 ↻ 快速录入公众号报价时间（时间来自公众号文章）</span>
+</div>
+
+<!-- ========== 粉蛋核心数据源 ========== -->
+<div class="sec-title">
+  <div class="dot" style="background:var(--pink)"></div>
+  粉蛋核心数据源
+  <span class="sub">参考标准：馆陶金凤 / 家美鲜</span>
+  <span class="cnt">5 个数据源</span>
+</div>
+
+<div class="quote-grid">
+
+<!-- ① 馆陶金凤市场 -->
+<div class="quote-card pink" id="card-guantao">
+  <!-- 快速更新气泡 -->
+  <div class="quick-bubble" id="bubble-guantao">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 馆陶金凤</div>
+    <div class="qb-hint">📌 打开公众号文章，填写<strong>文章显示的报价日期和时间</strong>（非手机当前时间）</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-guantao" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-guantao" type="text" placeholder="如：09:30（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 45斤参考</span><input class="qb-input" id="qbp-guantao" type="number" step="1" placeholder="如：219"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('guantao')">取消</button><button class="qb-save" onclick="saveBubble('guantao')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--pink-bg);color:var(--pink);font-size:13px">馆陶</div>
+      <div>
+        <div class="qc-name">馆陶金凤市场</div>
+        <div class="qc-meta">
+          <span id="date-guantao" class="qc-date-tag default">暂无录入</span>
+          <span>河北邯郸馆陶</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge pink">粉蛋核心</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('guantao',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">精品菜花黄蛋托（粉蛋）· 360枚/箱 · 元/箱</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>规格(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>45斤</td><td class="price">219</td><td class="price price-main price-hot">219</td><td class="change-flat">持平</td></tr>
+      <tr><td>44斤</td><td class="price">217</td><td class="price">217</td><td class="change-flat">持平</td></tr>
+      <tr><td>43斤</td><td class="price">215</td><td class="price">215</td><td class="change-flat">持平</td></tr>
+      <tr><td>42斤</td><td class="price">213</td><td class="price">213</td><td class="change-flat">持平</td></tr>
+      <tr><td>41斤</td><td class="price">211</td><td class="price">211</td><td class="change-flat">持平</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-subgroup">草绿蛋托（粉蛋）</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>规格(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>40–41斤</td><td class="price">211</td><td class="price">211</td><td class="change-flat">持平</td></tr>
+      <tr><td>38–39斤</td><td class="price">207</td><td class="price">207</td><td class="change-flat">持平</td></tr>
+      <tr><td>36–37斤</td><td class="price">204</td><td class="price">204</td><td class="change-flat">持平</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 馆陶褐壳蛋：45斤 227元 ▼5 &nbsp;|&nbsp; 轻一斤递减2元 &nbsp;|&nbsp; 单位：元/箱</div>
+  <button class="qc-edit-btn" onclick="openModal('guantao')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ② 家美鲜鸡蛋 -->
+<div class="quote-card pink" id="card-jiameixian">
+  <div class="quick-bubble" id="bubble-jiameixian">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 家美鲜</div>
+    <div class="qb-hint">📌 填写公众号文章显示的发布日期，一般09:00–10:00发布</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-jiameixian" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-jiameixian" type="text" placeholder="如：09:30（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 45斤参考</span><input class="qb-input" id="qbp-jiameixian" type="number" step="1" placeholder="如：244"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('jiameixian')">取消</button><button class="qb-save" onclick="saveBubble('jiameixian')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--pink-bg);color:var(--pink);font-size:13px">家美</div>
+      <div>
+        <div class="qc-name">家美鲜鸡蛋 · 佳美鲜</div>
+        <div class="qc-meta">
+          <span id="date-jiameixian" class="qc-date-tag default">暂无录入</span>
+          <span>广东/全国到户收购价</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge pink">粉蛋核心</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('jiameixian',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">粉蛋（含包装上车价）· 360枚/箱 · 元/箱</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>规格(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>46斤以上</td><td>—</td><td class="price" style="font-size:11px">按质加价</td><td>—</td></tr>
+      <tr><td>45斤</td><td class="price">244</td><td class="price price-main price-hot">244</td><td class="change-flat">持平</td></tr>
+      <tr><td>44斤</td><td class="price">242</td><td class="price">242</td><td class="change-flat">持平</td></tr>
+      <tr><td>43斤</td><td class="price">240</td><td class="price">240</td><td class="change-flat">持平</td></tr>
+      <tr><td>42斤</td><td class="price">238</td><td class="price">238</td><td class="change-flat">持平</td></tr>
+      <tr><td>41斤</td><td class="price">236</td><td class="price">236</td><td class="change-flat">持平</td></tr>
+      <tr><td>40斤</td><td class="price">234</td><td class="price">234</td><td class="change-flat">持平</td></tr>
+      <tr><td>39斤</td><td class="price">232</td><td class="price">232</td><td class="change-flat">持平</td></tr>
+      <tr><td>38斤</td><td class="price">229</td><td class="price">229</td><td class="change-flat">持平</td></tr>
+      <tr><td>37斤</td><td class="price">226</td><td class="price">226</td><td class="change-flat">持平</td></tr>
+      <tr><td>36斤</td><td class="price">222</td><td class="price">222</td><td class="change-flat">持平</td></tr>
+      <tr><td>35斤</td><td class="price">218</td><td class="price">218</td><td class="change-flat">持平</td></tr>
+      <tr><td>34斤</td><td class="price">214</td><td class="price">214</td><td class="change-flat">持平</td></tr>
+      <tr><td>33斤</td><td class="price">210</td><td class="price">210</td><td class="change-flat">持平</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 46-43斤：轻1斤减2元 &nbsp;|&nbsp; 42-38斤：轻1斤减2元 &nbsp;|&nbsp; 37-33斤：轻1斤减4元</div>
+  <button class="qc-edit-btn" onclick="openModal('jiameixian')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ③ 浠水蛋品交易中心 -->
+<div class="quote-card pink" id="card-xishui">
+  <div class="quick-bubble" id="bubble-xishui">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 浠水蛋品</div>
+    <div class="qb-hint">📌 浠水一般09:00–10:00发布，填写公众号文章显示时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-xishui" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-xishui" type="text" placeholder="如：09:45（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 45斤参考</span><input class="qb-input" id="qbp-xishui" type="number" step="1" placeholder="如：242"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('xishui')">取消</button><button class="qb-save" onclick="saveBubble('xishui')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--pink-bg);color:var(--pink);font-size:13px">浠水</div>
+      <div>
+        <div class="qc-name">浠水蛋品交易中心</div>
+        <div class="qc-meta">
+          <span id="date-xishui" class="qc-date-tag default">暂无录入</span>
+          <span>湖北黄冈浠水</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge pink">粉蛋核心</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('xishui',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">360枚/件 含包装 普通粉蛋 到户收购基准价 · 元/箱</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>净重(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>46斤以上</td><td>—</td><td class="price" style="font-size:11px">+2元/箱</td><td>—</td></tr>
+      <tr><td>45斤</td><td class="price">240</td><td class="price price-main price-hot">242</td><td class="change-up">2</td></tr>
+      <tr><td>44斤</td><td class="price">239</td><td class="price">241</td><td class="change-up">2</td></tr>
+      <tr><td>43斤</td><td class="price">238</td><td class="price">240</td><td class="change-up">2</td></tr>
+      <tr><td>42斤</td><td class="price">237</td><td class="price">239</td><td class="change-up">2</td></tr>
+      <tr><td>41斤</td><td class="price">236</td><td class="price">238</td><td class="change-up">2</td></tr>
+      <tr><td>40斤</td><td class="price">234</td><td class="price">236</td><td class="change-up">2</td></tr>
+      <tr><td>39斤</td><td class="price">232</td><td class="price">234</td><td class="change-up">2</td></tr>
+      <tr><td>38斤</td><td class="price">229</td><td class="price">231</td><td class="change-up">2</td></tr>
+      <tr><td>37斤</td><td class="price">226</td><td class="price">228</td><td class="change-up">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 45-43斤轻1斤减2元 &nbsp;|&nbsp; 42-38斤轻1斤减2元 &nbsp;|&nbsp; 37斤以下轻1斤减3元</div>
+  <button class="qc-edit-btn" onclick="openModal('xishui')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ④ 湖南三尖农牧 -->
+<div class="quote-card pink" id="card-sanjian">
+  <div class="quick-bubble" id="bubble-sanjian">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 三尖农牧</div>
+    <div class="qb-hint">📌 填写公众号文章标题或正文中的报价日期</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-sanjian" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-sanjian" type="text" placeholder="如：10:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 收购价参考</span><input class="qb-input" id="qbp-sanjian" type="number" step="1" placeholder="如：256"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('sanjian')">取消</button><button class="qb-save" onclick="saveBubble('sanjian')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--pink-bg);color:var(--pink)">湘</div>
+      <div>
+        <div class="qc-name">湖南三尖农牧</div>
+        <div class="qc-meta">
+          <span id="date-sanjian" class="qc-date-tag default">暂无录入</span>
+          <span>湖南常德桃源</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge pink">粉蛋</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('sanjian',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>品种</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>三尖收购价(45斤/件)</td><td class="price">253</td><td class="price price-hot">256</td><td class="change-up">3</td></tr>
+      <tr><td>桃源三江(45斤/件)</td><td class="price">253</td><td class="price">256</td><td class="change-up">3</td></tr>
+      <tr><td>常德(45斤/件)</td><td class="price">253</td><td class="price">256</td><td class="change-up">3</td></tr>
+      <tr><td>富硒鸡蛋(45斤/件)</td><td>—</td><td class="price">398</td><td>—</td></tr>
+      <tr><td>老母鸡(元/斤)</td><td>—</td><td class="price">7.30</td><td>—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 含包装上车价 &nbsp;|&nbsp; 360枚/件</div>
+  <button class="qc-edit-btn" onclick="openModal('sanjian')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑤ 河北辛集/饶阳/深州 -->
+<div class="quote-card pink" id="card-xiji">
+  <div class="quick-bubble" id="bubble-xiji">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 河北辛集</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期（辛集/饶阳/深州同源）</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-xiji" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-xiji" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 辛集45斤</span><input class="qb-input" id="qbp-xiji" type="number" step="1" placeholder="如：212"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('xiji')">取消</button><button class="qb-save" onclick="saveBubble('xiji')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--pink-bg);color:var(--pink)">冀</div>
+      <div>
+        <div class="qc-name">河北辛集 · 饶阳 · 深州</div>
+        <div class="qc-meta">
+          <span id="date-xiji" class="qc-date-tag default">暂无录入</span>
+          <span>河北衡水</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge pink">粉蛋</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('xiji',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>产区</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>辛集 45斤/箱</td><td class="price">214</td><td class="price">212</td><td class="change-down">2</td></tr>
+      <tr><td>饶阳 45斤/箱</td><td class="price">214</td><td class="price">212</td><td class="change-down">2</td></tr>
+      <tr><td>深州 45斤/箱</td><td class="price">214</td><td class="price">212</td><td class="change-down">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 来源：鸡蛋销售公众号 &nbsp;|&nbsp; 45斤/箱</div>
+  <button class="qc-edit-btn" onclick="openModal('xiji')">✏️ 录入今日数据</button>
+</div>
+
+</div><!-- /粉蛋 -->
+
+<!-- ========== 红蛋核心数据源 ========== -->
+<div class="sec-title" style="margin-top:26px">
+  <div class="dot" style="background:var(--red)"></div>
+  红蛋 / 褐壳蛋核心数据源
+  <span class="sub">参考标准：江西九江德安 / 河南金咕咕</span>
+  <span class="cnt">5 个数据源</span>
+</div>
+
+<div class="quote-grid">
+
+<!-- ⑥ 江西九江褐壳蛋 -->
+<div class="quote-card red" id="card-jiujiang">
+  <div class="quick-bubble" id="bubble-jiujiang">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 九江褐壳蛋</div>
+    <div class="qb-hint">📌 德安为核心参考，填写公众号文章发布时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-jiujiang" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-jiujiang" type="text" placeholder="如：10:15（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 德安45斤</span><input class="qb-input" id="qbp-jiujiang" type="number" step="1" placeholder="如：239"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('jiujiang')">取消</button><button class="qb-save" onclick="saveBubble('jiujiang')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">赣</div>
+      <div>
+        <div class="qc-name">江西九江褐壳蛋</div>
+        <div class="qc-meta">
+          <span id="date-jiujiang" class="qc-date-tag default">暂无录入</span>
+          <span>江西九江德安</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge red">红蛋核心</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('jiujiang',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">江西各地区报价（45斤/箱）· 含包装 · 元/箱</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>地区</th><th>品类</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>德安</td><td style="font-size:11px;color:var(--red)">褐壳</td><td class="price">237</td><td class="price price-hot">239</td><td class="change-up">2</td></tr>
+      <tr><td>九江</td><td style="font-size:11px;color:var(--red)">褐壳</td><td class="price">235</td><td class="price price-hot">240</td><td class="change-up">5</td></tr>
+      <tr><td>南昌</td><td style="font-size:11px;color:var(--red)">褐壳</td><td class="price">243</td><td class="price">248</td><td class="change-up">5</td></tr>
+      <tr><td>景德镇</td><td style="font-size:11px;color:var(--red)">褐壳</td><td class="price">235</td><td class="price">240</td><td class="change-up">5</td></tr>
+      <tr><td>抚州</td><td style="font-size:11px;color:var(--pink)">粉蛋</td><td class="price">247</td><td class="price">249</td><td class="change-up">2</td></tr>
+      <tr><td>宜春</td><td style="font-size:11px;color:var(--pink)">粉蛋</td><td class="price">248</td><td class="price">250</td><td class="change-up">2</td></tr>
+      <tr><td>吉安</td><td style="font-size:11px;color:var(--pink)">粉蛋</td><td class="price">248</td><td class="price">250</td><td class="change-up">2</td></tr>
+      <tr><td>赣州</td><td style="font-size:11px;color:var(--pink)">粉蛋</td><td class="price">248</td><td class="price">250</td><td class="change-up">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 含包装 &nbsp;|&nbsp; 360枚/箱 &nbsp;|&nbsp; 德安为核心参考</div>
+  <button class="qc-edit-btn" onclick="openModal('jiujiang')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑦ 河南金咕咕 -->
+<div class="quote-card red" id="card-jingugu">
+  <div class="quick-bubble" id="bubble-jingugu">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 金咕咕蛋品</div>
+    <div class="qb-hint">📌 周口/驻马店为主力参考，填写公众号文章发布时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-jingugu" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-jingugu" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 周口大蛋(元/斤)</span><input class="qb-input" id="qbp-jingugu" type="number" step="0.01" placeholder="如：5.10"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('jingugu')">取消</button><button class="qb-save" onclick="saveBubble('jingugu')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">金</div>
+      <div>
+        <div class="qc-name">河南金咕咕蛋品</div>
+        <div class="qc-meta">
+          <span id="date-jingugu" class="qc-date-tag default">暂无录入</span>
+          <span>河南各地</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge red">红蛋核心</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('jingugu',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">河南红蛋到户价 · 元/斤</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>地区</th><th>昨日(元/斤)</th><th>今日(元/斤)</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>周口大蛋</td><td class="price">5.15</td><td class="price price-hot">5.10</td><td class="change-down">0.05</td></tr>
+      <tr><td>驻马店大码</td><td class="price">5.15</td><td class="price">5.10</td><td class="change-down">0.05</td></tr>
+      <tr><td>商丘</td><td class="price">4.80</td><td class="price">4.72</td><td class="change-down">0.08</td></tr>
+      <tr><td>三门峡</td><td class="price">5.10</td><td class="price">5.10</td><td class="change-flat">持平</td></tr>
+      <tr><td>信阳</td><td class="price">5.10</td><td class="price">5.10</td><td class="change-flat">持平</td></tr>
+      <tr><td>安阳</td><td class="price">5.10</td><td class="price">5.10</td><td class="change-flat">持平</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 河南均价 4.96 元/斤 &nbsp;|&nbsp; 来源：金咕咕蛋品公众号</div>
+  <button class="qc-edit-btn" onclick="openModal('jingugu')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑧ 蓝天禽蛋联盟 -->
+<div class="quote-card red" id="card-lantian">
+  <div class="quick-bubble" id="bubble-lantian">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 蓝天禽蛋联盟</div>
+    <div class="qb-hint">📌 北京报价，一般早08:00–09:00发布，填写公众号文章时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-lantian" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-lantian" type="text" placeholder="如：08:30（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 北京主流(44斤)</span><input class="qb-input" id="qbp-lantian" type="number" step="1" placeholder="如：230"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('lantian')">取消</button><button class="qb-save" onclick="saveBubble('lantian')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">蓝</div>
+      <div>
+        <div class="qc-name">蓝天禽蛋联盟</div>
+        <div class="qc-meta">
+          <span id="date-lantian" class="qc-date-tag default">暂无录入</span>
+          <span>北京各大批发市场</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge red">北京主流</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('lantian',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">北京联合报价（44斤/箱）· 元/箱</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>市场</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>北京主流参考</td><td class="price">235</td><td class="price price-main price-hot">230</td><td class="change-down">5</td></tr>
+      <tr><td>大洋路</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>新发地</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>回龙观</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>顺义石门</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>昌平</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>锦绣大地</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+      <tr><td>水屯市场</td><td class="price">235</td><td class="price">230</td><td class="change-down">5</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 到货正常 走货一般 &nbsp;|&nbsp; 单位：元/箱 (44斤)</div>
+  <button class="qc-edit-btn" onclick="openModal('lantian')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑨ 青岛蛋商联盟 -->
+<div class="quote-card red" id="card-qingdao">
+  <div class="quick-bubble" id="bubble-qingdao">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 青岛蛋商联盟</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期和时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-qingdao" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-qingdao" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 批发(元/斤)</span><input class="qb-input" id="qbp-qingdao" type="number" step="0.01" placeholder="如：5.45"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('qingdao')">取消</button><button class="qb-save" onclick="saveBubble('qingdao')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">鲁</div>
+      <div>
+        <div class="qc-name">青岛蛋商联盟</div>
+        <div class="qc-meta">
+          <span id="date-qingdao" class="qc-date-tag default">暂无录入</span>
+          <span>山东青岛</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge red">山东红蛋</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('qingdao',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>品种</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>终端市场批发(元/斤)</td><td class="price">5.50</td><td class="price price-hot">5.45</td><td class="change-down">0.05</td></tr>
+      <tr><td>正旭鲜蛋(45斤/箱)</td><td class="price">245</td><td class="price">243</td><td class="change-down">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 市场走货正常</div>
+  <button class="qc-edit-btn" onclick="openModal('qingdao')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑩ 新洲家禽业协会 -->
+<div class="quote-card red" id="card-xinzhou">
+  <div class="quick-bubble" id="bubble-xinzhou">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 新洲兄弟蛋业</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期和时间</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-xinzhou" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-xinzhou" type="text" placeholder="如：09:30（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 红蛋大码(元/斤)</span><input class="qb-input" id="qbp-xinzhou" type="number" step="0.01" placeholder="如：5.30"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('xinzhou')">取消</button><button class="qb-save" onclick="saveBubble('xinzhou')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">鄂</div>
+      <div>
+        <div class="qc-name">武汉新洲区兄弟蛋业</div>
+        <div class="qc-meta">
+          <span id="date-xinzhou" class="qc-date-tag default">暂无录入</span>
+          <span>湖北武汉新洲</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge blue">湖北</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('xinzhou',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>品种</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>红蛋大码(元/斤)</td><td class="price">5.30</td><td class="price price-hot">5.30</td><td class="change-flat">持平</td></tr>
+      <tr><td>粉蛋(45斤/箱)</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>绿壳蛋(40斤/箱)</td><td>—</td><td>—</td><td>—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 新洲红蛋5.30元/斤 稳 &nbsp;|&nbsp; 360枚/箱 &nbsp;|&nbsp; 拒绝药残</div>
+  <button class="qc-edit-btn" onclick="openModal('xinzhou')">✏️ 录入今日数据</button>
+</div>
+
+</div><!-- /红蛋 -->
+
+<!-- ========== 其他数据源 ========== -->
+<div class="sec-title" style="margin-top:26px">
+  <div class="dot" style="background:var(--blue)"></div>
+  区域参考 &amp; 综合数据源
+  <span class="cnt">4 个数据源</span>
+</div>
+
+<div class="quote-grid">
+
+<!-- ⑪ 贵阳鸡蛋价格 -->
+<div class="quote-card green" id="card-guiyang">
+  <div class="quick-bubble" id="bubble-guiyang">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 贵阳鸡蛋价格</div>
+    <div class="qb-hint">📌 广西参考来源，填写公众号文章发布日期</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-guiyang" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-guiyang" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 粉蛋45斤</span><input class="qb-input" id="qbp-guiyang" type="number" step="1" placeholder="如：233"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('guiyang')">取消</button><button class="qb-save" onclick="saveBubble('guiyang')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--green-bg);color:var(--green)">贵</div>
+      <div>
+        <div class="qc-name">贵阳鸡蛋价格</div>
+        <div class="qc-meta">
+          <span id="date-guiyang" class="qc-date-tag default">暂无录入</span>
+          <span>贵州贵阳 · 广西参考源</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge green">贵阳报价</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('guiyang',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>品种</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>粉蛋(45斤/箱)</td><td class="price">228</td><td class="price price-hot">233</td><td class="change-up">5</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 广西地区参考贵阳报价 &nbsp;|&nbsp; 含包装</div>
+  <button class="qc-edit-btn" onclick="openModal('guiyang')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑫ 河北京饶蛋品 -->
+<div class="quote-card blue" id="card-jingyao">
+  <div class="quick-bubble" id="bubble-jingyao">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 京饶蛋品</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-jingyao" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-jingyao" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 粉蛋45斤</span><input class="qb-input" id="qbp-jingyao" type="number" step="1" placeholder="如：212"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('jingyao')">取消</button><button class="qb-save" onclick="saveBubble('jingyao')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--blue-bg);color:var(--blue)">京</div>
+      <div>
+        <div class="qc-name">河北京饶蛋品</div>
+        <div class="qc-meta">
+          <span id="date-jingyao" class="qc-date-tag default">暂无录入</span>
+          <span>河北衡水饶阳</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge blue">北京周边</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('jingyao',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-subgroup">沧州褐壳大蛋</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>规格</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>褐壳大蛋(40斤)</td><td class="price">202</td><td class="price">200</td><td class="change-down">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-subgroup">饶阳粉蛋</div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>规格</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>粉蛋(45斤/箱)</td><td class="price">214</td><td class="price">212</td><td class="change-down">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 以质定价 实际成交灵活</div>
+  <button class="qc-edit-btn" onclick="openModal('jingyao')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑬ 晋龙饲料 -->
+<div class="quote-card blue" id="card-jinlong">
+  <div class="quick-bubble" id="bubble-jinlong">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 晋龙饲料</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-jinlong" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-jinlong" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 山西均价(元/斤)</span><input class="qb-input" id="qbp-jinlong" type="number" step="0.01" placeholder="如：5.35"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('jinlong')">取消</button><button class="qb-save" onclick="saveBubble('jinlong')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--blue-bg);color:var(--blue)">晋</div>
+      <div>
+        <div class="qc-name">晋龙饲料</div>
+        <div class="qc-meta">
+          <span id="date-jinlong" class="qc-date-tag default">暂无录入</span>
+          <span>山西稷山/运城</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge blue">山西</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('jinlong',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>品种</th><th>昨日(元/斤)</th><th>今日(元/斤)</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>山西均价</td><td class="price">5.38</td><td class="price price-hot">5.35</td><td class="change-down">0.03</td></tr>
+      <tr><td>稷山</td><td class="price">5.35</td><td class="price">5.30</td><td class="change-down">0.05</td></tr>
+      <tr><td>运城</td><td class="price">5.30</td><td class="price">5.25</td><td class="change-down">0.05</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 晋龙集团 饲料+蛋鸡一体化 &nbsp;|&nbsp; 山西褐壳为主</div>
+  <button class="qc-edit-btn" onclick="openModal('jinlong')">✏️ 录入今日数据</button>
+</div>
+
+<!-- ⑭ 豆粕每日价格 -->
+<div class="quote-card blue" id="card-doumei">
+  <div class="quick-bubble" id="bubble-doumei">
+    <div class="qb-title"><div class="qb-title-dot"></div>快速更新 · 豆粕价格</div>
+    <div class="qb-hint">📌 填写公众号文章发布日期</div>
+    <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-doumei" type="text" placeholder="如：6月12日"></div>
+    <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-doumei" type="text" placeholder="如：09:00（选填）"></div>
+    <div class="qb-row"><span class="qb-label">💰 全国均价(元/斤)</span><input class="qb-input" id="qbp-doumei" type="number" step="0.01" placeholder="如：5.15"></div>
+    <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('doumei')">取消</button><button class="qb-save" onclick="saveBubble('doumei')">✓ 更新时间</button></div>
+  </div>
+  <div class="qc-header">
+    <div class="qc-header-left">
+      <div class="qc-avatar" style="background:var(--blue-bg);color:var(--blue)">豆</div>
+      <div>
+        <div class="qc-name">豆粕每日价格</div>
+        <div class="qc-meta">
+          <span id="date-doumei" class="qc-date-tag default">暂无录入</span>
+          <span>全国各省均价</span>
+        </div>
+      </div>
+    </div>
+    <div class="qc-header-right">
+      <div class="qc-badge blue">全国均价</div>
+      <button class="qc-refresh-btn" onclick="toggleBubble('doumei',event)" title="录入公众号报价时间">↻</button>
+    </div>
+  </div>
+  <div class="qc-table-wrap">
+  <table class="qc-table">
+    <thead><tr><th>省份</th><th>昨日(元/斤)</th><th>今日(元/斤)</th><th>涨跌</th></tr></thead>
+    <tbody>
+      <tr><td>北京</td><td class="price">5.34</td><td class="price">5.23</td><td class="change-down">0.11</td></tr>
+      <tr><td>上海</td><td class="price">5.24</td><td class="price">5.20</td><td class="change-down">0.04</td></tr>
+      <tr><td>山东</td><td class="price">5.18</td><td class="price">5.15</td><td class="change-down">0.03</td></tr>
+      <tr><td>河南</td><td class="price">4.96</td><td class="price">4.90</td><td class="change-down">0.06</td></tr>
+      <tr><td>河北</td><td class="price">5.15</td><td class="price">5.10</td><td class="change-down">0.05</td></tr>
+      <tr><td>辽宁</td><td class="price">5.15</td><td class="price">5.06</td><td class="change-down">0.09</td></tr>
+      <tr><td>江苏</td><td class="price">5.25</td><td class="price">5.18</td><td class="change-down">0.07</td></tr>
+      <tr><td>山西</td><td class="price">5.38</td><td class="price">5.35</td><td class="change-down">0.03</td></tr>
+      <tr><td>湖北</td><td class="price">5.34</td><td class="price">5.38</td><td class="change-up">0.04</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="qc-note">📌 全国均价 5.15 元/斤 ▼0.06 &nbsp;|&nbsp; 来源：豆粕每日价格公众号</div>
+  <button class="qc-edit-btn" onclick="openModal('doumei')">✏️ 录入今日数据</button>
+</div>
+
+</div><!-- /其他 -->
+
+<!-- ========== 走势图 ========== -->
+<div class="chart-section">
+  <div class="chart-header">
+    <div class="sec-title" style="margin:0">
+      <div class="dot" style="background:var(--accent);flex-shrink:0"></div>
+      近7日价格走势
+      <span class="sub" id="chart-subtitle">箱价(45斤/箱，元)</span>
+    </div>
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="switchChart('box',this)">箱价(45斤)</button>
+      <button class="chart-tab" onclick="switchChart('jin',this)">元/斤</button>
+    </div>
+  </div>
+  <canvas id="trendChart" style="height:260px;max-height:260px"></canvas>
+</div>
+
+<!-- ========== 区域映射 ========== -->
+<div class="region-table">
+  <div style="padding:14px 18px;font-size:14px;font-weight:700;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+    🗺️ 区域报价对应关系
+    <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px">乘乘EGG平台映射规则</span>
+  </div>
+  <table class="rtable">
+    <thead>
+      <tr>
+        <th>需求区域</th>
+        <th>参考来源</th>
+        <th>蛋品类</th>
+        <th>今日参考价</th>
+        <th>对应公众号</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>山东 / 河南</strong></td>
+        <td>馆陶金凤市场</td>
+        <td><span class="region-tag" style="background:var(--pink-bg);color:var(--pink)">粉蛋</span></td>
+        <td><strong style="color:var(--pink)">219元/箱(45斤)</strong></td>
+        <td style="color:var(--text3)">馆陶金凤 / 鸡蛋销售</td>
+      </tr>
+      <tr>
+        <td><strong>江浙沪</strong></td>
+        <td>家美鲜</td>
+        <td><span class="region-tag" style="background:var(--pink-bg);color:var(--pink)">粉蛋</span></td>
+        <td><strong style="color:var(--pink)">244元/箱(45斤)</strong></td>
+        <td style="color:var(--text3)">家美鲜鸡蛋</td>
+      </tr>
+      <tr>
+        <td><strong>北京</strong></td>
+        <td>北京主流报价</td>
+        <td><span class="region-tag" style="background:var(--red-bg);color:var(--red)">红蛋</span></td>
+        <td><strong style="color:var(--red)">230元/箱(44斤)</strong></td>
+        <td style="color:var(--text3)">蓝天禽蛋联盟</td>
+      </tr>
+      <tr>
+        <td><strong>广西</strong></td>
+        <td>贵阳报价</td>
+        <td><span class="region-tag" style="background:var(--green-bg);color:var(--green)">粉蛋</span></td>
+        <td><strong style="color:var(--green)">233元/箱(45斤)</strong></td>
+        <td style="color:var(--text3)">贵阳鸡蛋价格</td>
+      </tr>
+      <tr>
+        <td><strong>湖北</strong></td>
+        <td>浠水蛋品中心</td>
+        <td><span class="region-tag" style="background:var(--pink-bg);color:var(--pink)">粉蛋</span></td>
+        <td><strong style="color:var(--pink)">242元/箱(45斤)</strong></td>
+        <td style="color:var(--text3)">浠水蛋品交易中心</td>
+      </tr>
+      <tr>
+        <td><strong>湖南</strong></td>
+        <td>三尖农牧</td>
+        <td><span class="region-tag" style="background:var(--pink-bg);color:var(--pink)">粉蛋</span></td>
+        <td><strong style="color:var(--pink)">256元/件(45斤)</strong></td>
+        <td style="color:var(--text3)">湖南三尖农牧</td>
+      </tr>
+      <tr>
+        <td><strong>江西</strong></td>
+        <td>九江德安</td>
+        <td><span class="region-tag" style="background:var(--red-bg);color:var(--red)">红蛋</span></td>
+        <td><strong style="color:var(--red)">239元/箱(45斤)</strong></td>
+        <td style="color:var(--text3)">江西九江褐壳蛋</td>
+      </tr>
+      <tr>
+        <td><strong>河南</strong></td>
+        <td>金咕咕</td>
+        <td><span class="region-tag" style="background:var(--red-bg);color:var(--red)">红蛋</span></td>
+        <td><strong style="color:var(--red)">5.10元/斤</strong></td>
+        <td style="color:var(--text3)">河南金咕咕蛋品</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  数据来源：各产区公众号公开报价 · 仅供参考 以实际成交为准<br>
+  <span>乘乘EGG</span> · 全国鸡蛋报价平台 · 2026 &nbsp;·&nbsp; 数据更新时间 09:00–11:00
+</div>
+
+</div><!-- /container -->
+
+<!-- ========== 录入弹窗 ========== -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span id="modalIcon">✏️</span>
+        <span id="modalTitle">录入今日数据</span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- 动态生成 -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">取消</button>
+      <button class="btn-primary" onclick="saveModal()">💾 保存并更新</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ 工具：解析日期字符串 ============
+// 将 "6月12日" → Date 对象（当年），解析失败返回 null
+function parseDateStr(str) {
+  if (!str) return null;
+  str = str.trim();
+  const m = str.match(/(\d{1,2})[月\/\-](\d{1,2})[日号]?/);
+  if (!m) return null;
+  const now = new Date();
+  const d = new Date(now.getFullYear(), parseInt(m[1]) - 1, parseInt(m[2]));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// 计算与今天相差几天（正数=过去）
+function daysDiff(dateObj) {
+  const today = new Date();
+  const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const d0 = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate()).getTime();
+  return Math.round((t0 - d0) / 86400000);
+}
+
+// 根据日期字符串返回显示状态
+function getDateTagInfo(dateStr, timeStr) {
+  const d = parseDateStr(dateStr);
+  if (!d) return { cls: 'default', text: '暂无录入' };
+  const diff = daysDiff(d);
+  const tp = timeStr ? ' ' + timeStr : '';
+  if (diff === 0) return { cls: 'today',     text: '今日' + tp };
+  if (diff === 1) return { cls: 'yesterday', text: '昨日' + tp };
+  if (diff >= 2)  return { cls: 'old',       text: dateStr + tp + '（' + diff + '天前）' };
+  return           { cls: 'today',     text: dateStr + tp };   // 未来
+}
+
+// ============ 时间数据独立存储 ============
+const TIME_KEY = 'egg_time_v2';
+
+function saveTimeData(key, dateStr, timeStr) {
+  try {
+    const all = JSON.parse(localStorage.getItem(TIME_KEY) || '{}');
+    all[key] = { dateStr: dateStr, timeStr: timeStr || '', savedAt: Date.now() };
+    localStorage.setItem(TIME_KEY, JSON.stringify(all));
+  } catch(e) {}
+}
+
+function loadTimeData(key) {
+  try {
+    const all = JSON.parse(localStorage.getItem(TIME_KEY) || '{}');
+    return all[key] || null;
+  } catch(e) { return null; }
+}
+
+// ============ 刷新日期标签 ============
+const ALL_KEYS = ['guantao','jiameixian','xishui','sanjian','xiji',
+                  'jiujiang','jingugu','lantian','qingdao','xinzhou',
+                  'guiyang','jingyao','jinlong','doumei'];
+
+function refreshDateTag(key) {
+  const saved = loadTimeData(key);
+  const el = document.getElementById('date-' + key);
+  if (!el) return;
+  if (!saved || !saved.dateStr) {
+    el.className = 'qc-date-tag default';
+    el.textContent = '暂无录入';
+    return;
+  }
+  const info = getDateTagInfo(saved.dateStr, saved.timeStr);
+  el.className = 'qc-date-tag ' + info.cls;
+  el.textContent = info.text;
+}
+
+function refreshAllDateTags() {
+  ALL_KEYS.forEach(refreshDateTag);
+}
+
+// ============ 气泡控制 ============
+let currentBubble = null;
+
+function toggleBubble(key, e) {
+  if (e) e.stopPropagation();
+  const bubble = document.getElementById('bubble-' + key);
+  if (!bubble) return;
+
+  // 旋转动画
+  const btn = e && e.currentTarget;
+  if (btn) {
+    btn.classList.remove('spinning');
+    void btn.offsetWidth; // reflow
+    btn.classList.add('spinning');
+    setTimeout(() => btn.classList.remove('spinning'), 400);
+  }
+
+  // 关闭其他气泡
+  if (currentBubble && currentBubble !== bubble) {
+    currentBubble.classList.remove('open');
+  }
+  if (bubble.classList.contains('open')) {
+    bubble.classList.remove('open');
+    currentBubble = null;
+    return;
+  }
+
+  // 预填已保存的值
+  const saved = loadTimeData(key);
+  const dateInput = document.getElementById('qbd-' + key);
+  const timeInput = document.getElementById('qbt-' + key);
+  if (dateInput) {
+    if (saved && saved.dateStr) {
+      dateInput.value = saved.dateStr;
+    } else {
+      const now = new Date();
+      dateInput.value = (now.getMonth()+1) + '月' + now.getDate() + '日';
+    }
+  }
+  if (timeInput) timeInput.value = saved ? (saved.timeStr || '') : '';
+
+  bubble.classList.add('open');
+  currentBubble = bubble;
+  setTimeout(() => { if (dateInput) dateInput.focus(); }, 60);
+}
+
+function closeBubble(key) {
+  const b = document.getElementById('bubble-' + key);
+  if (b) b.classList.remove('open');
+  if (currentBubble === b) currentBubble = null;
+}
+
+function saveBubble(key) {
+  const dateEl = document.getElementById('qbd-' + key);
+  const timeEl = document.getElementById('qbt-' + key);
+  const priceEl = document.getElementById('qbp-' + key);
+
+  const dateStr = dateEl ? dateEl.value.trim() : '';
+  const timeStr = timeEl ? timeEl.value.trim() : '';
+  const price   = priceEl ? priceEl.value.trim() : '';
+
+  if (!dateStr) {
+    if (dateEl) { dateEl.style.borderColor = '#ef4444'; setTimeout(() => dateEl.style.borderColor = '', 1200); }
+    showToast('请填写报价日期', 'info');
+    return;
+  }
+
+  // 保存时间数据
+  saveTimeData(key, dateStr, timeStr);
+  refreshDateTag(key);
+
+  // 同时将快速价格记录到数据存储（供完整录入时预填）
+  if (price) {
+    try {
+      const all = JSON.parse(localStorage.getItem('egg_dashboard') || '{}');
+      if (!all[key]) all[key] = [];
+      const idx = all[key].findIndex(d => d._date === dateStr);
+      if (idx >= 0) { all[key][idx]._quickPrice = price; all[key][idx]._time = timeStr; }
+      else { all[key].unshift({ _date: dateStr, _time: timeStr, _quickPrice: price, _ts: Date.now() }); all[key] = all[key].slice(0, 90); }
+      localStorage.setItem('egg_dashboard', JSON.stringify(all));
+    } catch(e) {}
+  }
+
+  closeBubble(key);
+  const name = SOURCES[key] ? SOURCES[key].name : key;
+  const info = getDateTagInfo(dateStr, timeStr);
+  showToast(name + ' 时间已更新 → 「' + info.text + '」', 'success');
+}
+
+// 点击外部关闭气泡
+document.addEventListener('click', function(e) {
+  if (!currentBubble) return;
+  if (currentBubble.contains(e.target)) return;
+  if (e.target.classList.contains('qc-refresh-btn')) return;
+  currentBubble.classList.remove('open');
+  currentBubble = null;
+});
+
+// ============ 初始化 ============
+function getTodayFull() {
+  const d = new Date();
+  const days = ['日','一','二','三','四','五','六'];
+  return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 · 星期'+days[d.getDay()];
+}
+document.getElementById('headerDate').textContent = getTodayFull();
+// 页面加载时刷新所有日期标签（读取 localStorage 恢复状态）
+refreshAllDateTags();
+const SOURCES = {
+  guantao: {
+    name:'馆陶金凤市场', icon:'馆陶', color:'pink',
+    fields:[
+      {key:'p45',label:'精品45斤/箱',type:'price'},
+      {key:'p44',label:'精品44斤/箱',type:'price'},
+      {key:'p43',label:'精品43斤/箱',type:'price'},
+      {key:'p42',label:'精品42斤/箱',type:'price'},
+      {key:'p41',label:'精品41斤/箱',type:'price'},
+      {key:'c4041',label:'草绿40-41斤',type:'price'},
+      {key:'c3839',label:'草绿38-39斤',type:'price'},
+      {key:'c3637',label:'草绿36-37斤',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jiameixian: {
+    name:'家美鲜鸡蛋', icon:'家美', color:'pink',
+    fields:[
+      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
+      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
+      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
+      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
+      {key:'p37',label:'37斤/箱',type:'price'},{key:'p36',label:'36斤/箱',type:'price'},
+      {key:'p35',label:'35斤/箱',type:'price'},{key:'p34',label:'34斤/箱',type:'price'},
+      {key:'p33',label:'33斤/箱',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xishui: {
+    name:'浠水蛋品交易中心', icon:'浠水', color:'pink',
+    fields:[
+      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
+      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
+      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
+      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
+      {key:'p37',label:'37斤/箱',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  sanjian: {
+    name:'湖南三尖农牧', icon:'湘', color:'pink',
+    fields:[
+      {key:'sanjian',label:'三尖收购价(45斤/件)',type:'price'},
+      {key:'taoyuan',label:'桃源三江(45斤/件)',type:'price'},
+      {key:'changde',label:'常德(45斤/件)',type:'price'},
+      {key:'fuxiao',label:'富硒鸡蛋(45斤/件)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xiji: {
+    name:'河北辛集/饶阳/深州', icon:'冀', color:'pink',
+    fields:[
+      {key:'xiji',label:'辛集(45斤/箱)',type:'price'},
+      {key:'raoyang',label:'饶阳(45斤/箱)',type:'price'},
+      {key:'shenzhou',label:'深州(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jiujiang: {
+    name:'江西九江褐壳蛋', icon:'赣', color:'red',
+    fields:[
+      {key:'dean',label:'德安 褐壳(45斤/箱)',type:'price'},
+      {key:'jiujiang',label:'九江 褐壳(45斤/箱)',type:'price'},
+      {key:'nanchang',label:'南昌 褐壳(45斤/箱)',type:'price'},
+      {key:'jingdz',label:'景德镇 褐壳(45斤/箱)',type:'price'},
+      {key:'fuzhou',label:'抚州 粉蛋(45斤/箱)',type:'price'},
+      {key:'yichun',label:'宜春 粉蛋(45斤/箱)',type:'price'},
+      {key:'jian',label:'吉安 粉蛋(45斤/箱)',type:'price'},
+      {key:'ganzhou',label:'赣州 粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jingugu: {
+    name:'河南金咕咕蛋品', icon:'金', color:'red',
+    fields:[
+      {key:'zhoukou',label:'周口大蛋(元/斤)',type:'price'},
+      {key:'zhumd',label:'驻马店大码(元/斤)',type:'price'},
+      {key:'shangqiu',label:'商丘(元/斤)',type:'price'},
+      {key:'sanmenxia',label:'三门峡(元/斤)',type:'price'},
+      {key:'xinyang',label:'信阳(元/斤)',type:'price'},
+      {key:'anyang',label:'安阳(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  lantian: {
+    name:'蓝天禽蛋联盟', icon:'蓝', color:'red',
+    fields:[
+      {key:'main',label:'北京主流参考(44斤/箱)',type:'price'},
+      {key:'dayanglu',label:'大洋路',type:'price'},
+      {key:'xinfadi',label:'新发地',type:'price'},
+      {key:'huil',label:'回龙观',type:'price'},
+      {key:'shunyi',label:'顺义石门',type:'price'},
+      {key:'changping',label:'昌平',type:'price'},
+      {key:'jinxiu',label:'锦绣大地',type:'price'},
+      {key:'shuitun',label:'水屯市场',type:'price'},
+      {key:'note',label:'市场行情备注',type:'text'},
+    ]
+  },
+  qingdao: {
+    name:'青岛蛋商联盟', icon:'鲁', color:'red',
+    fields:[
+      {key:'pifa',label:'终端市场批发(元/斤)',type:'price'},
+      {key:'zhengxu',label:'正旭鲜蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xinzhou: {
+    name:'武汉新洲区兄弟蛋业', icon:'鄂', color:'red',
+    fields:[
+      {key:'hongdan',label:'红蛋大码(元/斤)',type:'price'},
+      {key:'fendan',label:'粉蛋(45斤/箱)',type:'price'},
+      {key:'lvdan',label:'绿壳蛋(40斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  guiyang: {
+    name:'贵阳鸡蛋价格', icon:'贵', color:'green',
+    fields:[
+      {key:'fendan45',label:'粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jingyao: {
+    name:'河北京饶蛋品', icon:'京', color:'blue',
+    fields:[
+      {key:'huhe',label:'褐壳大蛋(40斤/箱)',type:'price'},
+      {key:'fendan',label:'饶阳粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jinlong: {
+    name:'晋龙饲料', icon:'晋', color:'blue',
+    fields:[
+      {key:'avg',label:'山西均价(元/斤)',type:'price'},
+      {key:'jishan',label:'稷山(元/斤)',type:'price'},
+      {key:'yuncheng',label:'运城(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  doumei: {
+    name:'豆粕每日价格', icon:'豆', color:'blue',
+    fields:[
+      {key:'beijing',label:'北京(元/斤)',type:'price'},
+      {key:'shanghai',label:'上海(元/斤)',type:'price'},
+      {key:'shandong',label:'山东(元/斤)',type:'price'},
+      {key:'henan',label:'河南(元/斤)',type:'price'},
+      {key:'hebei',label:'河北(元/斤)',type:'price'},
+      {key:'liaoning',label:'辽宁(元/斤)',type:'price'},
+      {key:'jiangsu',label:'江苏(元/斤)',type:'price'},
+      {key:'shanxi',label:'山西(元/斤)',type:'price'},
+      {key:'hubei',label:'湖北(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  }
+};
+
+// ============ 数据结构 ============
+const SOURCES = {
+  guantao: {
+    name:'馆陶金凤市场', icon:'馆陶', color:'pink',
+    fields:[
+      {key:'p45',label:'精品45斤/箱',type:'price'},
+      {key:'p44',label:'精品44斤/箱',type:'price'},
+      {key:'p43',label:'精品43斤/箱',type:'price'},
+      {key:'p42',label:'精品42斤/箱',type:'price'},
+      {key:'p41',label:'精品41斤/箱',type:'price'},
+      {key:'c4041',label:'草绿40-41斤',type:'price'},
+      {key:'c3839',label:'草绿38-39斤',type:'price'},
+      {key:'c3637',label:'草绿36-37斤',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jiameixian: {
+    name:'家美鲜鸡蛋', icon:'家美', color:'pink',
+    fields:[
+      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
+      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
+      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
+      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
+      {key:'p37',label:'37斤/箱',type:'price'},{key:'p36',label:'36斤/箱',type:'price'},
+      {key:'p35',label:'35斤/箱',type:'price'},{key:'p34',label:'34斤/箱',type:'price'},
+      {key:'p33',label:'33斤/箱',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xishui: {
+    name:'浠水蛋品交易中心', icon:'浠水', color:'pink',
+    fields:[
+      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
+      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
+      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
+      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
+      {key:'p37',label:'37斤/箱',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  sanjian: {
+    name:'湖南三尖农牧', icon:'湘', color:'pink',
+    fields:[
+      {key:'sanjian',label:'三尖收购价(45斤/件)',type:'price'},
+      {key:'taoyuan',label:'桃源三江(45斤/件)',type:'price'},
+      {key:'changde',label:'常德(45斤/件)',type:'price'},
+      {key:'fuxiao',label:'富硒鸡蛋(45斤/件)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xiji: {
+    name:'河北辛集/饶阳/深州', icon:'冀', color:'pink',
+    fields:[
+      {key:'xiji',label:'辛集(45斤/箱)',type:'price'},
+      {key:'raoyang',label:'饶阳(45斤/箱)',type:'price'},
+      {key:'shenzhou',label:'深州(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jiujiang: {
+    name:'江西九江褐壳蛋', icon:'赣', color:'red',
+    fields:[
+      {key:'dean',label:'德安 褐壳(45斤/箱)',type:'price'},
+      {key:'jiujiang',label:'九江 褐壳(45斤/箱)',type:'price'},
+      {key:'nanchang',label:'南昌 褐壳(45斤/箱)',type:'price'},
+      {key:'jingdz',label:'景德镇 褐壳(45斤/箱)',type:'price'},
+      {key:'fuzhou',label:'抚州 粉蛋(45斤/箱)',type:'price'},
+      {key:'yichun',label:'宜春 粉蛋(45斤/箱)',type:'price'},
+      {key:'jian',label:'吉安 粉蛋(45斤/箱)',type:'price'},
+      {key:'ganzhou',label:'赣州 粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jingugu: {
+    name:'河南金咕咕蛋品', icon:'金', color:'red',
+    fields:[
+      {key:'zhoukou',label:'周口大蛋(元/斤)',type:'price'},
+      {key:'zhumd',label:'驻马店大码(元/斤)',type:'price'},
+      {key:'shangqiu',label:'商丘(元/斤)',type:'price'},
+      {key:'sanmenxia',label:'三门峡(元/斤)',type:'price'},
+      {key:'xinyang',label:'信阳(元/斤)',type:'price'},
+      {key:'anyang',label:'安阳(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  lantian: {
+    name:'蓝天禽蛋联盟', icon:'蓝', color:'red',
+    fields:[
+      {key:'main',label:'北京主流参考(44斤/箱)',type:'price'},
+      {key:'dayanglu',label:'大洋路',type:'price'},
+      {key:'xinfadi',label:'新发地',type:'price'},
+      {key:'huil',label:'回龙观',type:'price'},
+      {key:'shunyi',label:'顺义石门',type:'price'},
+      {key:'changping',label:'昌平',type:'price'},
+      {key:'jinxiu',label:'锦绣大地',type:'price'},
+      {key:'shuitun',label:'水屯市场',type:'price'},
+      {key:'note',label:'市场行情备注',type:'text'},
+    ]
+  },
+  qingdao: {
+    name:'青岛蛋商联盟', icon:'鲁', color:'red',
+    fields:[
+      {key:'pifa',label:'终端市场批发(元/斤)',type:'price'},
+      {key:'zhengxu',label:'正旭鲜蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  xinzhou: {
+    name:'武汉新洲区兄弟蛋业', icon:'鄂', color:'red',
+    fields:[
+      {key:'hongdan',label:'红蛋大码(元/斤)',type:'price'},
+      {key:'fendan',label:'粉蛋(45斤/箱)',type:'price'},
+      {key:'lvdan',label:'绿壳蛋(40斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  guiyang: {
+    name:'贵阳鸡蛋价格', icon:'贵', color:'green',
+    fields:[
+      {key:'fendan45',label:'粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jingyao: {
+    name:'河北京饶蛋品', icon:'京', color:'blue',
+    fields:[
+      {key:'huhe',label:'褐壳大蛋(40斤/箱)',type:'price'},
+      {key:'fendan',label:'饶阳粉蛋(45斤/箱)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  jinlong: {
+    name:'晋龙饲料', icon:'晋', color:'blue',
+    fields:[
+      {key:'avg',label:'山西均价(元/斤)',type:'price'},
+      {key:'jishan',label:'稷山(元/斤)',type:'price'},
+      {key:'yuncheng',label:'运城(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  },
+  doumei: {
+    name:'豆粕每日价格', icon:'豆', color:'blue',
+    fields:[
+      {key:'beijing',label:'北京(元/斤)',type:'price'},
+      {key:'shanghai',label:'上海(元/斤)',type:'price'},
+      {key:'shandong',label:'山东(元/斤)',type:'price'},
+      {key:'henan',label:'河南(元/斤)',type:'price'},
+      {key:'hebei',label:'河北(元/斤)',type:'price'},
+      {key:'liaoning',label:'辽宁(元/斤)',type:'price'},
+      {key:'jiangsu',label:'江苏(元/斤)',type:'price'},
+      {key:'shanxi',label:'山西(元/斤)',type:'price'},
+      {key:'hubei',label:'湖北(元/斤)',type:'price'},
+      {key:'note',label:'备注',type:'text'},
+    ]
+  }
+};
+
+// ============ Chart ============
+const chartLabels=['6月6日','6月7日','6月8日','6月9日','6月10日','6月11日','6月12日'];
+const chartData={
+  box:[
+    {label:'馆陶金凤(45斤)',data:[219,219,219,null,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'浠水粉蛋(45斤)',data:[235,240,242,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'家美鲜(45斤)',data:[244,244,244,null,null,null,null],borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'三尖农牧(45斤)',data:[253,253,256,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'北京主流(44斤)',data:[235,235,230,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'贵阳(45斤)',data:[228,228,233,null,null,null,null],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'九江德安(45斤)',data:[237,237,239,null,null,null,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:.3,fill:true,spanGaps:false},
+  ],
+  jin:[
+    {label:'北京(元/斤)',data:[5.34,5.34,5.23,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山东(元/斤)',data:[5.18,5.18,5.15,null,null,null,null],borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'河南(元/斤)',data:[4.96,4.96,4.90,null,null,null,null],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'湖北(元/斤)',data:[5.34,5.34,5.38,null,null,null,null],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山西(元/斤)',data:[5.38,5.38,5.35,null,null,null,null],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.06)',tension:.3,fill:true,spanGaps:false},
+  ]
+};
+let chartInst;
+function makeChart(t){
+  const ctx=document.getElementById('trendChart').getContext('2d');
+  if(chartInst)chartInst.destroy();
+  chartInst=new Chart(ctx,{
+    type:'line',
+    data:{labels:chartLabels,datasets:chartData[t]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:'#94a3b8',font:{size:11},usePointStyle:true,pointStyle:'circle',boxWidth:8}},
+        tooltip:{backgroundColor:'#1a3045',titleColor:'#e2e8f0',bodyColor:'#94a3b8',borderColor:'#1e3a52',borderWidth:1,padding:10,cornerRadius:8}
+      },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}},
+        y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}}
+      }
+    }
+  });
+}
+makeChart('box');
+function switchChart(t,btn){
+  document.querySelectorAll('.chart-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chart-subtitle').textContent = t==='box'?'箱价(45斤/箱，元)':'元/斤均价';
+  makeChart(t);
+}
+const chartLabels=['6月6日','6月7日','6月8日','6月9日','6月10日','6月11日','6月12日'];
+const chartData={
+  box:[
+    {label:'馆陶金凤(45斤)',data:[219,219,219,null,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'浠水粉蛋(45斤)',data:[235,240,242,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'家美鲜(45斤)',data:[244,244,244,null,null,null,null],borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'三尖农牧(45斤)',data:[253,253,256,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'北京主流(44斤)',data:[235,235,230,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'贵阳(45斤)',data:[228,228,233,null,null,null,null],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'九江德安(45斤)',data:[237,237,239,null,null,null,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:.3,fill:true,spanGaps:false},
+  ],
+  jin:[
+    {label:'北京(元/斤)',data:[5.34,5.34,5.23,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山东(元/斤)',data:[5.18,5.18,5.15,null,null,null,null],borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'河南(元/斤)',data:[4.96,4.96,4.90,null,null,null,null],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'湖北(元/斤)',data:[5.34,5.34,5.38,null,null,null,null],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山西(元/斤)',data:[5.38,5.38,5.35,null,null,null,null],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.06)',tension:.3,fill:true,spanGaps:false},
+  ]
+};
+let chartInst;
+function makeChart(t){
+  const ctx=document.getElementById('trendChart').getContext('2d');
+  if(chartInst)chartInst.destroy();
+  chartInst=new Chart(ctx,{
+    type:'line',
+    data:{labels:chartLabels,datasets:chartData[t]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:'#94a3b8',font:{size:11},usePointStyle:true,pointStyle:'circle',boxWidth:8}},
+        tooltip:{backgroundColor:'#1a3045',titleColor:'#e2e8f0',bodyColor:'#94a3b8',borderColor:'#1e3a52',borderWidth:1,padding:10,cornerRadius:8}
+      },
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}},
+        y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}}
+      }
+    }
+  });
+}
+makeChart('box');
+function switchChart(t,btn){
+  document.querySelectorAll('.chart-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chart-subtitle').textContent = t==='box'?'箱价(45斤/箱，元)':'元/斤均价';
+  makeChart(t);
+}
+
+// ============ Modal ============
+let currentSource = null;
+function openModal(key){
+  currentSource = key;
+  const src = SOURCES[key];
+  document.getElementById('modalTitle').textContent = `录入 · ${src.name}`;
+  document.getElementById('modalIcon').textContent = src.color==='pink'?'🩷':src.color==='red'?'🔴':src.color==='green'?'🟢':'🔵';
+
+  // Load saved data
+  const saved = loadData(key) || {};
+  const now = new Date();
+  const today = (now.getMonth()+1)+'月'+now.getDate()+'日报价';
+
+  let html = `<div class="form-group">
+    <label class="form-label">📅 报价日期</label>
+    <input class="form-input" id="fi_date" type="text" value="${today}" placeholder="如：6月12日报价">
+  </div>`;
+
+  // Group fields by 3
+  const priceFields = src.fields.filter(f=>f.type==='price');
+  const textFields = src.fields.filter(f=>f.type==='text');
+
+  html += `<div class="form-section-title">价格数据（元/箱 或 元/斤，填0表示暂无）</div>`;
+  html += `<div class="form-row" style="grid-template-columns:repeat(3,1fr)">`;
+  priceFields.forEach(f=>{
+    const val = saved[f.key]||'';
+    html += `<div><label class="form-label">${f.label}</label>
+      <input class="form-input" id="fi_${f.key}" type="number" step="0.01" value="${val}" placeholder="—"></div>`;
+  });
+  html += `</div>`;
+
+  if(textFields.length){
+    html += `<div class="form-section-title" style="margin-top:12px">备注信息</div>`;
+    textFields.forEach(f=>{
+      const val = saved[f.key]||'';
+      html += `<div class="form-group">
+        <label class="form-label">${f.label}</label>
+        <input class="form-input" id="fi_${f.key}" type="text" value="${val}" placeholder="如：走货正常、到货充足...">
+      </div>`;
+    });
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('editModal').classList.remove('open');
+  currentSource = null;
+}
+
+function saveModal(){
+  if(!currentSource) return;
+  const src = SOURCES[currentSource];
+  const data = { _date: document.getElementById('fi_date').value, _ts: Date.now() };
+  src.fields.forEach(f=>{
+    const el = document.getElementById('fi_'+f.key);
+    if(el) data[f.key] = el.value;
+  });
+  saveData(currentSource, data);
+
+  // 同步更新时间存储，解析日期字符串（去掉"报价"后缀）
+  const rawDate = data._date.replace('报价','').trim();
+  saveTimeData(currentSource, rawDate, '');
+  refreshDateTag(currentSource);
+
+  closeModal();
+  showToast(`${src.name} 数据已保存 ✓`, 'success');
+}
+
+// ============ Storage ============
+function saveData(key, data){
+  try{
+    const all = JSON.parse(localStorage.getItem('egg_dashboard')||'{}');
+    if(!all[key]) all[key]=[];
+    // Remove same-date duplicate
+    const dateStr = data._date;
+    const idx = all[key].findIndex(d=>d._date===dateStr);
+    if(idx>=0) all[key][idx]=data;
+    else all[key].unshift(data);
+    // Keep last 90 records
+    all[key]=all[key].slice(0,90);
+    localStorage.setItem('egg_dashboard', JSON.stringify(all));
+  }catch(e){console.warn('save failed',e)}
+}
+function loadData(key){
+  try{
+    const all = JSON.parse(localStorage.getItem('egg_dashboard')||'{}');
+    return (all[key]||[])[0]||null;
+  }catch(e){return null}
+}
+
+// ============ Export / Import ============
+function exportData(){
+  try{
+    const data = localStorage.getItem('egg_dashboard')||'{}';
+    const blob = new Blob([data],{type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const d = new Date();
+    a.href=url;
+    a.download=`egg_prices_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('数据已导出为 JSON 文件', 'info');
+  }catch(e){showToast('导出失败:'+e.message,'info')}
+}
+function importData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const data = JSON.parse(ev.target.result);
+      localStorage.setItem('egg_dashboard', JSON.stringify(data));
+      showToast('数据导入成功，刷新页面生效', 'success');
+    }catch(err){showToast('导入失败，文件格式不正确','info')}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ============ Toast ============
+function showToast(msg, type='info'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ============ Close modal on overlay click ============
+document.getElementById('editModal').addEventListener('click', function(e){
+  if(e.target===this) closeModal();
+});
+</script>
+</body>
+</html>
