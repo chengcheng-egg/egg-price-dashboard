@@ -250,8 +250,8 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 <div class="stats-bar">
   <div class="stat-card pink">
     <div class="stat-tag">馆陶粉蛋 · 45斤</div>
-    <div class="stat-val" style="color:var(--pink)" id="s-guantao">219</div>
-    <div class="stat-chg change-flat" style="color:var(--flat)">— 持平</div>
+    <div class="stat-val" style="color:var(--pink)" id="s-guantao">216</div>
+    <div class="stat-chg change-down" style="color:var(--down)">▼3</div>
   </div>
   <div class="stat-card pink">
     <div class="stat-tag">家美鲜粉蛋 · 45斤</div>
@@ -341,11 +341,11 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   <table class="qc-table">
     <thead><tr><th>规格(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
     <tbody>
-      <tr><td>45斤</td><td class="price">219</td><td class="price price-main price-hot">219</td><td class="change-flat">持平</td></tr>
-      <tr><td>44斤</td><td class="price">217</td><td class="price">217</td><td class="change-flat">持平</td></tr>
-      <tr><td>43斤</td><td class="price">215</td><td class="price">215</td><td class="change-flat">持平</td></tr>
-      <tr><td>42斤</td><td class="price">213</td><td class="price">213</td><td class="change-flat">持平</td></tr>
-      <tr><td>41斤</td><td class="price">211</td><td class="price">211</td><td class="change-flat">持平</td></tr>
+      <tr><td>45斤</td><td class="price">219</td><td class="price price-main price-hot">216</td><td class="change-down">▼3</td></tr>
+      <tr><td>44斤</td><td class="price">217</td><td class="price">214</td><td class="change-down">▼3</td></tr>
+      <tr><td>43斤</td><td class="price">215</td><td class="price">212</td><td class="change-down">▼3</td></tr>
+      <tr><td>42斤</td><td class="price">213</td><td class="price">210</td><td class="change-down">▼3</td></tr>
+      <tr><td>41斤</td><td class="price">211</td><td class="price">208</td><td class="change-down">▼3</td></tr>
     </tbody>
   </table>
   </div>
@@ -354,13 +354,15 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   <table class="qc-table">
     <thead><tr><th>规格(斤)</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
     <tbody>
-      <tr><td>40–41斤</td><td class="price">211</td><td class="price">211</td><td class="change-flat">持平</td></tr>
-      <tr><td>38–39斤</td><td class="price">207</td><td class="price">207</td><td class="change-flat">持平</td></tr>
-      <tr><td>36–37斤</td><td class="price">204</td><td class="price">204</td><td class="change-flat">持平</td></tr>
+      <tr><td>40–41斤</td><td class="price">211</td><td class="price">208</td><td class="change-down">▼3</td></tr>
+      <tr><td>38–39斤</td><td class="price">207</td><td class="price">204</td><td class="change-down">▼3</td></tr>
+      <tr><td>36–37斤</td><td class="price">203</td><td class="price">200</td><td class="change-down">▼3</td></tr>
+      <tr><td>33–35斤</td><td class="price">195</td><td class="price">192</td><td class="change-down">▼3</td></tr>
+      <tr><td>30–32斤</td><td class="price">185</td><td class="price">182</td><td class="change-down">▼3</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="qc-note">📌 馆陶褐壳蛋：45斤 227元 ▼5 &nbsp;|&nbsp; 轻一斤递减2元 &nbsp;|&nbsp; 单位：元/箱</div>
+  <div class="qc-note">📌 馆陶粉蛋全线下调3元 &nbsp;|&nbsp; 45斤216元/箱 &nbsp;|&nbsp; 轻一斤递减2元 &nbsp;|&nbsp; 360枚/箱</div>
   <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-guantao">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('guantao')">✏️ 录入今日数据</button>
 </div>
@@ -1008,7 +1010,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
         <td><strong>山东 / 河南</strong></td>
         <td>馆陶金凤市场</td>
         <td><span class="region-tag" style="background:var(--pink-bg);color:var(--pink)">粉蛋</span></td>
-        <td><strong style="color:var(--pink)">219元/箱(45斤)</strong></td>
+        <td><strong style="color:var(--pink)">216元/箱(45斤) ▼3</strong></td>
         <td style="color:var(--text3)">馆陶金凤 / 鸡蛋销售</td>
       </tr>
       <tr>
@@ -1453,7 +1455,7 @@ const SOURCES = {
 const chartLabels=['6月9日','6月10日','6月11日','6月12日','6月13日','6月14日','6月15日'];
 const chartData={
   box:[
-    {label:'馆陶金凤(45斤)',data:[219,219,219,null,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'馆陶金凤(45斤)',data:[219,219,219,216,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
     {label:'浠水粉蛋(45斤)',data:[240,242,null,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
     {label:'家美鲜(45斤)',data:[244,244,244,null,null,null,null],borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.06)',tension:.3,fill:true,spanGaps:false},
     {label:'三尖农牧(45斤)',data:[253,256,null,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
