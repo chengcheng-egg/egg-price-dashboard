@@ -146,6 +146,15 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 /* Note */
 .qc-note{padding:7px 14px;font-size:10px;color:var(--text3);line-height:1.6;background:rgba(0,0,0,.1);border-top:1px solid rgba(30,58,82,.2)}
 
+/* Update time bar */
+.qc-update-bar{display:flex;align-items:center;justify-content:space-between;padding:5px 14px;border-top:1px solid rgba(30,58,82,.25);font-size:10px;color:var(--text3);background:rgba(0,0,0,.08)}
+.qc-update-bar .ub-label{display:flex;align-items:center;gap:4px;color:var(--text3)}
+.qc-update-bar .ub-time{font-weight:600;letter-spacing:.2px}
+.qc-update-bar .ub-time.today{color:#22c55e}
+.qc-update-bar .ub-time.yesterday{color:#f59e0b}
+.qc-update-bar .ub-time.old{color:#ef4444}
+.qc-update-bar .ub-time.empty{color:var(--text3)}
+
 /* Edit button */
 .qc-edit-btn{margin:8px 14px;padding:6px;width:calc(100% - 28px);background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.1);border-radius:7px;color:var(--text3);font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
 .qc-edit-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,107,53,.05)}
@@ -352,6 +361,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 馆陶褐壳蛋：45斤 227元 ▼5 &nbsp;|&nbsp; 轻一斤递减2元 &nbsp;|&nbsp; 单位：元/箱</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-guantao">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('guantao')">✏️ 录入今日数据</button>
 </div>
 
@@ -404,6 +414,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 46-43斤：轻1斤减2元 &nbsp;|&nbsp; 42-38斤：轻1斤减2元 &nbsp;|&nbsp; 37-33斤：轻1斤减4元</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-jiameixian">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('jiameixian')">✏️ 录入今日数据</button>
 </div>
 
@@ -452,6 +463,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 45-43斤轻1斤减2元 &nbsp;|&nbsp; 42-38斤轻1斤减2元 &nbsp;|&nbsp; 37斤以下轻1斤减3元</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-xishui">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('xishui')">✏️ 录入今日数据</button>
 </div>
 
@@ -494,6 +506,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 含包装上车价 &nbsp;|&nbsp; 360枚/件</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-sanjian">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('sanjian')">✏️ 录入今日数据</button>
 </div>
 
@@ -534,6 +547,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 来源：鸡蛋销售公众号 &nbsp;|&nbsp; 45斤/箱</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-xiji">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('xiji')">✏️ 录入今日数据</button>
 </div>
 
@@ -592,6 +606,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 含包装 &nbsp;|&nbsp; 360枚/箱 &nbsp;|&nbsp; 德安为核心参考</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-jiujiang">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('jiujiang')">✏️ 录入今日数据</button>
 </div>
 
@@ -636,6 +651,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 河南均价 4.96 元/斤 &nbsp;|&nbsp; 来源：金咕咕蛋品公众号</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-jingugu">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('jingugu')">✏️ 录入今日数据</button>
 </div>
 
@@ -682,6 +698,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 到货正常 走货一般 &nbsp;|&nbsp; 单位：元/箱 (44斤)</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-lantian">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('lantian')">✏️ 录入今日数据</button>
 </div>
 
@@ -721,6 +738,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 市场走货正常</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-qingdao">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('qingdao')">✏️ 录入今日数据</button>
 </div>
 
@@ -731,36 +749,36 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
     <div class="qb-hint">📌 填写公众号文章发布日期和时间</div>
     <div class="qb-row"><span class="qb-label">📅 报价日期</span><input class="qb-input" id="qbd-xinzhou" type="text" placeholder="如：6月12日"></div>
     <div class="qb-row"><span class="qb-label">🕐 发布时间</span><input class="qb-input" id="qbt-xinzhou" type="text" placeholder="如：09:30（选填）"></div>
-    <div class="qb-row"><span class="qb-label">💰 红蛋大码(元/斤)</span><input class="qb-input" id="qbp-xinzhou" type="number" step="0.01" placeholder="如：5.30"></div>
+    <div class="qb-row"><span class="qb-label">💰 绿壳蛋(元/斤)</span><input class="qb-input" id="qbp-xinzhou" type="number" step="0.01" placeholder="如：8.00"></div>
     <div class="qb-footer"><button class="qb-cancel" onclick="closeBubble('xinzhou')">取消</button><button class="qb-save" onclick="saveBubble('xinzhou')">✓ 更新时间</button></div>
   </div>
   <div class="qc-header">
     <div class="qc-header-left">
-      <div class="qc-avatar" style="background:var(--red-bg);color:var(--red)">鄂</div>
+      <div class="qc-avatar" style="background:var(--green-bg);color:var(--green)">鄂</div>
       <div>
         <div class="qc-name">武汉新洲区兄弟蛋业</div>
         <div class="qc-meta">
           <span id="date-xinzhou" class="qc-date-tag default">暂无录入</span>
-          <span>湖北武汉新洲</span>
+          <span>湖北武汉新洲 · 绿壳蛋</span>
         </div>
       </div>
     </div>
     <div class="qc-header-right">
-      <div class="qc-badge blue">湖北</div>
+      <div class="qc-badge green">绿壳蛋</div>
       <button class="qc-refresh-btn" onclick="toggleBubble('xinzhou',event)" title="录入公众号报价时间">↻</button>
     </div>
   </div>
+  <div class="qc-subgroup">绿壳蛋报价（元/斤）· 360枚/箱</div>
   <div class="qc-table-wrap">
   <table class="qc-table">
     <thead><tr><th>品种</th><th>昨日</th><th>今日</th><th>涨跌</th></tr></thead>
     <tbody>
-      <tr><td>红蛋大码(元/斤)</td><td class="price">5.30</td><td class="price price-hot">5.30</td><td class="change-flat">持平</td></tr>
-      <tr><td>粉蛋(45斤/箱)</td><td>—</td><td>—</td><td>—</td></tr>
-      <tr><td>绿壳蛋(40斤/箱)</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>绿壳蛋(40斤/箱)</td><td>—</td><td class="price price-hot">—</td><td>—</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="qc-note">📌 新洲红蛋5.30元/斤 稳 &nbsp;|&nbsp; 360枚/箱 &nbsp;|&nbsp; 拒绝药残</div>
+  <div class="qc-note">📌 新洲兄弟蛋业 · 绿壳蛋专项报价 &nbsp;|&nbsp; 360枚/箱 &nbsp;|&nbsp; 拒绝药残</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-xinzhou">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('xinzhou')">✏️ 录入今日数据</button>
 </div>
 
@@ -810,6 +828,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 广西地区参考贵阳报价 &nbsp;|&nbsp; 含包装</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-guiyang">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('guiyang')">✏️ 录入今日数据</button>
 </div>
 
@@ -858,6 +877,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 以质定价 实际成交灵活</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-jingyao">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('jingyao')">✏️ 录入今日数据</button>
 </div>
 
@@ -898,6 +918,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 晋龙集团 饲料+蛋鸡一体化 &nbsp;|&nbsp; 山西褐壳为主</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-jinlong">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('jinlong')">✏️ 录入今日数据</button>
 </div>
 
@@ -944,6 +965,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   </table>
   </div>
   <div class="qc-note">📌 全国均价 5.15 元/斤 ▼0.06 &nbsp;|&nbsp; 来源：豆粕每日价格公众号</div>
+  <div class="qc-update-bar"><span class="ub-label">🕐 数据更新</span><span class="ub-time empty" id="utime-doumei">暂无录入</span></div>
   <button class="qc-edit-btn" onclick="openModal('doumei')">✏️ 录入今日数据</button>
 </div>
 
@@ -1131,15 +1153,34 @@ const ALL_KEYS = ['guantao','jiameixian','xishui','sanjian','xiji',
 function refreshDateTag(key) {
   const saved = loadTimeData(key);
   const el = document.getElementById('date-' + key);
+  const ubar = document.getElementById('utime-' + key);
+
   if (!el) return;
   if (!saved || !saved.dateStr) {
     el.className = 'qc-date-tag default';
     el.textContent = '暂无录入';
+    if (ubar) { ubar.className = 'ub-time empty'; ubar.textContent = '暂无录入'; }
     return;
   }
   const info = getDateTagInfo(saved.dateStr, saved.timeStr);
   el.className = 'qc-date-tag ' + info.cls;
   el.textContent = info.text;
+
+  // 同步更新底部时间条
+  if (ubar) {
+    ubar.className = 'ub-time ' + info.cls;
+    // 底部时间条显示更完整的信息
+    const tp = saved.timeStr ? saved.timeStr : '';
+    if (info.cls === 'today') {
+      ubar.textContent = '今日' + (tp ? ' ' + tp : '');
+    } else if (info.cls === 'yesterday') {
+      ubar.textContent = '昨日' + (tp ? ' ' + tp : '');
+    } else if (info.cls === 'old') {
+      ubar.textContent = saved.dateStr + (tp ? ' ' + tp : '');
+    } else {
+      ubar.textContent = saved.dateStr + (tp ? ' ' + tp : '');
+    }
+  }
 }
 
 function refreshAllDateTags() {
@@ -1253,162 +1294,6 @@ function getTodayFull() {
 document.getElementById('headerDate').textContent = getTodayFull();
 // 页面加载时刷新所有日期标签（读取 localStorage 恢复状态）
 refreshAllDateTags();
-const SOURCES = {
-  guantao: {
-    name:'馆陶金凤市场', icon:'馆陶', color:'pink',
-    fields:[
-      {key:'p45',label:'精品45斤/箱',type:'price'},
-      {key:'p44',label:'精品44斤/箱',type:'price'},
-      {key:'p43',label:'精品43斤/箱',type:'price'},
-      {key:'p42',label:'精品42斤/箱',type:'price'},
-      {key:'p41',label:'精品41斤/箱',type:'price'},
-      {key:'c4041',label:'草绿40-41斤',type:'price'},
-      {key:'c3839',label:'草绿38-39斤',type:'price'},
-      {key:'c3637',label:'草绿36-37斤',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  jiameixian: {
-    name:'家美鲜鸡蛋', icon:'家美', color:'pink',
-    fields:[
-      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
-      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
-      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
-      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
-      {key:'p37',label:'37斤/箱',type:'price'},{key:'p36',label:'36斤/箱',type:'price'},
-      {key:'p35',label:'35斤/箱',type:'price'},{key:'p34',label:'34斤/箱',type:'price'},
-      {key:'p33',label:'33斤/箱',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  xishui: {
-    name:'浠水蛋品交易中心', icon:'浠水', color:'pink',
-    fields:[
-      {key:'p45',label:'45斤/箱',type:'price'},{key:'p44',label:'44斤/箱',type:'price'},
-      {key:'p43',label:'43斤/箱',type:'price'},{key:'p42',label:'42斤/箱',type:'price'},
-      {key:'p41',label:'41斤/箱',type:'price'},{key:'p40',label:'40斤/箱',type:'price'},
-      {key:'p39',label:'39斤/箱',type:'price'},{key:'p38',label:'38斤/箱',type:'price'},
-      {key:'p37',label:'37斤/箱',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  sanjian: {
-    name:'湖南三尖农牧', icon:'湘', color:'pink',
-    fields:[
-      {key:'sanjian',label:'三尖收购价(45斤/件)',type:'price'},
-      {key:'taoyuan',label:'桃源三江(45斤/件)',type:'price'},
-      {key:'changde',label:'常德(45斤/件)',type:'price'},
-      {key:'fuxiao',label:'富硒鸡蛋(45斤/件)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  xiji: {
-    name:'河北辛集/饶阳/深州', icon:'冀', color:'pink',
-    fields:[
-      {key:'xiji',label:'辛集(45斤/箱)',type:'price'},
-      {key:'raoyang',label:'饶阳(45斤/箱)',type:'price'},
-      {key:'shenzhou',label:'深州(45斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  jiujiang: {
-    name:'江西九江褐壳蛋', icon:'赣', color:'red',
-    fields:[
-      {key:'dean',label:'德安 褐壳(45斤/箱)',type:'price'},
-      {key:'jiujiang',label:'九江 褐壳(45斤/箱)',type:'price'},
-      {key:'nanchang',label:'南昌 褐壳(45斤/箱)',type:'price'},
-      {key:'jingdz',label:'景德镇 褐壳(45斤/箱)',type:'price'},
-      {key:'fuzhou',label:'抚州 粉蛋(45斤/箱)',type:'price'},
-      {key:'yichun',label:'宜春 粉蛋(45斤/箱)',type:'price'},
-      {key:'jian',label:'吉安 粉蛋(45斤/箱)',type:'price'},
-      {key:'ganzhou',label:'赣州 粉蛋(45斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  jingugu: {
-    name:'河南金咕咕蛋品', icon:'金', color:'red',
-    fields:[
-      {key:'zhoukou',label:'周口大蛋(元/斤)',type:'price'},
-      {key:'zhumd',label:'驻马店大码(元/斤)',type:'price'},
-      {key:'shangqiu',label:'商丘(元/斤)',type:'price'},
-      {key:'sanmenxia',label:'三门峡(元/斤)',type:'price'},
-      {key:'xinyang',label:'信阳(元/斤)',type:'price'},
-      {key:'anyang',label:'安阳(元/斤)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  lantian: {
-    name:'蓝天禽蛋联盟', icon:'蓝', color:'red',
-    fields:[
-      {key:'main',label:'北京主流参考(44斤/箱)',type:'price'},
-      {key:'dayanglu',label:'大洋路',type:'price'},
-      {key:'xinfadi',label:'新发地',type:'price'},
-      {key:'huil',label:'回龙观',type:'price'},
-      {key:'shunyi',label:'顺义石门',type:'price'},
-      {key:'changping',label:'昌平',type:'price'},
-      {key:'jinxiu',label:'锦绣大地',type:'price'},
-      {key:'shuitun',label:'水屯市场',type:'price'},
-      {key:'note',label:'市场行情备注',type:'text'},
-    ]
-  },
-  qingdao: {
-    name:'青岛蛋商联盟', icon:'鲁', color:'red',
-    fields:[
-      {key:'pifa',label:'终端市场批发(元/斤)',type:'price'},
-      {key:'zhengxu',label:'正旭鲜蛋(45斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  xinzhou: {
-    name:'武汉新洲区兄弟蛋业', icon:'鄂', color:'red',
-    fields:[
-      {key:'hongdan',label:'红蛋大码(元/斤)',type:'price'},
-      {key:'fendan',label:'粉蛋(45斤/箱)',type:'price'},
-      {key:'lvdan',label:'绿壳蛋(40斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  guiyang: {
-    name:'贵阳鸡蛋价格', icon:'贵', color:'green',
-    fields:[
-      {key:'fendan45',label:'粉蛋(45斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  jingyao: {
-    name:'河北京饶蛋品', icon:'京', color:'blue',
-    fields:[
-      {key:'huhe',label:'褐壳大蛋(40斤/箱)',type:'price'},
-      {key:'fendan',label:'饶阳粉蛋(45斤/箱)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  jinlong: {
-    name:'晋龙饲料', icon:'晋', color:'blue',
-    fields:[
-      {key:'avg',label:'山西均价(元/斤)',type:'price'},
-      {key:'jishan',label:'稷山(元/斤)',type:'price'},
-      {key:'yuncheng',label:'运城(元/斤)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  },
-  doumei: {
-    name:'豆粕每日价格', icon:'豆', color:'blue',
-    fields:[
-      {key:'beijing',label:'北京(元/斤)',type:'price'},
-      {key:'shanghai',label:'上海(元/斤)',type:'price'},
-      {key:'shandong',label:'山东(元/斤)',type:'price'},
-      {key:'henan',label:'河南(元/斤)',type:'price'},
-      {key:'hebei',label:'河北(元/斤)',type:'price'},
-      {key:'liaoning',label:'辽宁(元/斤)',type:'price'},
-      {key:'jiangsu',label:'江苏(元/斤)',type:'price'},
-      {key:'shanxi',label:'山西(元/斤)',type:'price'},
-      {key:'hubei',label:'湖北(元/斤)',type:'price'},
-      {key:'note',label:'备注',type:'text'},
-    ]
-  }
-};
-
 // ============ 数据结构 ============
 const SOURCES = {
   guantao: {
@@ -1517,11 +1402,9 @@ const SOURCES = {
     ]
   },
   xinzhou: {
-    name:'武汉新洲区兄弟蛋业', icon:'鄂', color:'red',
+    name:'武汉新洲区兄弟蛋业', icon:'鄂', color:'green',
     fields:[
-      {key:'hongdan',label:'红蛋大码(元/斤)',type:'price'},
-      {key:'fendan',label:'粉蛋(45斤/箱)',type:'price'},
-      {key:'lvdan',label:'绿壳蛋(40斤/箱)',type:'price'},
+      {key:'lvdan',label:'绿壳蛋(元/斤)',type:'price'},
       {key:'note',label:'备注',type:'text'},
     ]
   },
@@ -1567,70 +1450,23 @@ const SOURCES = {
 };
 
 // ============ Chart ============
-const chartLabels=['6月6日','6月7日','6月8日','6月9日','6月10日','6月11日','6月12日'];
+const chartLabels=['6月9日','6月10日','6月11日','6月12日','6月13日','6月14日','6月15日'];
 const chartData={
   box:[
     {label:'馆陶金凤(45斤)',data:[219,219,219,null,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'浠水粉蛋(45斤)',data:[235,240,242,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'浠水粉蛋(45斤)',data:[240,242,null,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
     {label:'家美鲜(45斤)',data:[244,244,244,null,null,null,null],borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'三尖农牧(45斤)',data:[253,253,256,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'北京主流(44斤)',data:[235,235,230,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'贵阳(45斤)',data:[228,228,233,null,null,null,null],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'九江德安(45斤)',data:[237,237,239,null,null,null,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'三尖农牧(45斤)',data:[253,256,null,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'北京主流(44斤)',data:[235,230,null,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'贵阳(45斤)',data:[228,233,null,null,null,null,null],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'九江德安(45斤)',data:[237,239,null,null,null,null,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:.3,fill:true,spanGaps:false},
   ],
   jin:[
-    {label:'北京(元/斤)',data:[5.34,5.34,5.23,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'山东(元/斤)',data:[5.18,5.18,5.15,null,null,null,null],borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'河南(元/斤)',data:[4.96,4.96,4.90,null,null,null,null],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'湖北(元/斤)',data:[5.34,5.34,5.38,null,null,null,null],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'山西(元/斤)',data:[5.38,5.38,5.35,null,null,null,null],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.06)',tension:.3,fill:true,spanGaps:false},
-  ]
-};
-let chartInst;
-function makeChart(t){
-  const ctx=document.getElementById('trendChart').getContext('2d');
-  if(chartInst)chartInst.destroy();
-  chartInst=new Chart(ctx,{
-    type:'line',
-    data:{labels:chartLabels,datasets:chartData[t]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{labels:{color:'#94a3b8',font:{size:11},usePointStyle:true,pointStyle:'circle',boxWidth:8}},
-        tooltip:{backgroundColor:'#1a3045',titleColor:'#e2e8f0',bodyColor:'#94a3b8',borderColor:'#1e3a52',borderWidth:1,padding:10,cornerRadius:8}
-      },
-      scales:{
-        x:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}},
-        y:{ticks:{color:'#64748b',font:{size:11}},grid:{color:'rgba(30,58,82,0.25)'}}
-      }
-    }
-  });
-}
-makeChart('box');
-function switchChart(t,btn){
-  document.querySelectorAll('.chart-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('chart-subtitle').textContent = t==='box'?'箱价(45斤/箱，元)':'元/斤均价';
-  makeChart(t);
-}
-const chartLabels=['6月6日','6月7日','6月8日','6月9日','6月10日','6月11日','6月12日'];
-const chartData={
-  box:[
-    {label:'馆陶金凤(45斤)',data:[219,219,219,null,null,null,null],borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'浠水粉蛋(45斤)',data:[235,240,242,null,null,null,null],borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'家美鲜(45斤)',data:[244,244,244,null,null,null,null],borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'三尖农牧(45斤)',data:[253,253,256,null,null,null,null],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'北京主流(44斤)',data:[235,235,230,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'贵阳(45斤)',data:[228,228,233,null,null,null,null],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'九江德安(45斤)',data:[237,237,239,null,null,null,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:.3,fill:true,spanGaps:false},
-  ],
-  jin:[
-    {label:'北京(元/斤)',data:[5.34,5.34,5.23,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'山东(元/斤)',data:[5.18,5.18,5.15,null,null,null,null],borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'河南(元/斤)',data:[4.96,4.96,4.90,null,null,null,null],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'湖北(元/斤)',data:[5.34,5.34,5.38,null,null,null,null],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.06)',tension:.3,fill:true,spanGaps:false},
-    {label:'山西(元/斤)',data:[5.38,5.38,5.35,null,null,null,null],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'北京(元/斤)',data:[5.34,5.23,null,null,null,null,null],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山东(元/斤)',data:[5.18,5.15,null,null,null,null,null],borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'河南(元/斤)',data:[4.96,4.90,null,null,null,null,null],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'湖北(元/斤)',data:[5.34,5.38,null,null,null,null,null],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.06)',tension:.3,fill:true,spanGaps:false},
+    {label:'山西(元/斤)',data:[5.38,5.35,null,null,null,null,null],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.06)',tension:.3,fill:true,spanGaps:false},
   ]
 };
 let chartInst;
