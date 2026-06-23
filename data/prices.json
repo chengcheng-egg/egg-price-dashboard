@@ -1,6 +1,6 @@
 {
-  "lastScrapeTime": "2026-06-23T16:50:00+08:00",
-  "lastScrapeStatus": "partial",
+  "lastScrapeTime": "2026-06-23T17:26:10.784345+08:00",
+  "lastScrapeStatus": "success:0, failed:12",
   "sources": {
     "guantao": {
       "name": "河北馆陶鸡蛋报价",
@@ -9,7 +9,7 @@
       "color": "pink",
       "region": "河北邯郸馆陶",
       "category": "粉蛋核心",
-      "status": "updated",
+      "status": "pending",
       "article": {
         "title": "【河北馆陶鸡蛋报价】2026年6月22日 跌！",
         "date": "2026-06-22",
@@ -23,21 +23,71 @@
         {
           "name": "精品菜花黄蛋托（粉蛋）· 360枚/箱 · 元/箱",
           "rows": [
-            {"spec": "45斤", "yesterday": 192, "today": 188, "change": -4},
-            {"spec": "44斤", "yesterday": 190, "today": 186, "change": -4},
-            {"spec": "43斤", "yesterday": 188, "today": 184, "change": -4},
-            {"spec": "42斤", "yesterday": 186, "today": 182, "change": -4},
-            {"spec": "41斤", "yesterday": 184, "today": 180, "change": -4}
+            {
+              "spec": "45斤",
+              "yesterday": 192,
+              "today": 188,
+              "change": -4
+            },
+            {
+              "spec": "44斤",
+              "yesterday": 190,
+              "today": 186,
+              "change": -4
+            },
+            {
+              "spec": "43斤",
+              "yesterday": 188,
+              "today": 184,
+              "change": -4
+            },
+            {
+              "spec": "42斤",
+              "yesterday": 186,
+              "today": 182,
+              "change": -4
+            },
+            {
+              "spec": "41斤",
+              "yesterday": 184,
+              "today": 180,
+              "change": -4
+            }
           ]
         },
         {
           "name": "草绿蛋托（粉蛋）",
           "rows": [
-            {"spec": "40–41斤", "yesterday": 185, "today": 181, "change": -4},
-            {"spec": "38–39斤", "yesterday": 179, "today": 175, "change": -4},
-            {"spec": "36–37斤", "yesterday": 173, "today": 169, "change": -4},
-            {"spec": "33–35斤", "yesterday": 160, "today": 156, "change": -4},
-            {"spec": "30–32斤", "yesterday": 155, "today": 151, "change": -4}
+            {
+              "spec": "40–41斤",
+              "yesterday": 185,
+              "today": 181,
+              "change": -4
+            },
+            {
+              "spec": "38–39斤",
+              "yesterday": 179,
+              "today": 175,
+              "change": -4
+            },
+            {
+              "spec": "36–37斤",
+              "yesterday": 173,
+              "today": 169,
+              "change": -4
+            },
+            {
+              "spec": "33–35斤",
+              "yesterday": 160,
+              "today": 156,
+              "change": -4
+            },
+            {
+              "spec": "30–32斤",
+              "yesterday": 155,
+              "today": 151,
+              "change": -4
+            }
           ]
         }
       ],
@@ -57,19 +107,84 @@
         {
           "name": "粉蛋 · 360枚/箱 · 元/箱",
           "rows": [
-            {"spec": "45斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "44斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "43斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "42斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "41斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "40斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "39斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "38斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "37斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "36斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "35斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "34斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "33斤", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "45斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "44斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "43斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "42斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "41斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "40斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "39斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "38斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "37斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "36斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "35斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "34斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "33斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -88,15 +203,60 @@
         {
           "name": "粉蛋 · 360枚/箱 · 元/箱",
           "rows": [
-            {"spec": "45斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "44斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "43斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "42斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "41斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "40斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "39斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "38斤", "yesterday": null, "today": null, "change": null},
-            {"spec": "37斤", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "45斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "44斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "43斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "42斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "41斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "40斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "39斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "38斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "37斤",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -115,10 +275,30 @@
         {
           "name": "粉蛋 · 360枚/件 · 元/件",
           "rows": [
-            {"spec": "三尖收购价(45斤/件)", "yesterday": null, "today": null, "change": null},
-            {"spec": "桃源三江(45斤/件)", "yesterday": null, "today": null, "change": null},
-            {"spec": "常德(45斤/件)", "yesterday": null, "today": null, "change": null},
-            {"spec": "富硒鸡蛋(45斤/件)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "三尖收购价(45斤/件)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "桃源三江(45斤/件)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "常德(45斤/件)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "富硒鸡蛋(45斤/件)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -137,9 +317,24 @@
         {
           "name": "粉蛋 · 45斤/箱 · 元/箱",
           "rows": [
-            {"spec": "辛集(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "饶阳(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "深州(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "辛集(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "饶阳(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "深州(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -158,19 +353,59 @@
         {
           "name": "褐壳蛋 · 360枚/箱 · 元/箱",
           "rows": [
-            {"spec": "德安 褐壳(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "九江 褐壳(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "南昌 褐壳(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "景德镇 褐壳(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "德安 褐壳(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "九江 褐壳(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "南昌 褐壳(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "景德镇 褐壳(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         },
         {
           "name": "粉蛋 · 360枚/箱 · 元/箱",
           "rows": [
-            {"spec": "抚州 粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "宜春 粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "吉安 粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "赣州 粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "抚州 粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "宜春 粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "吉安 粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "赣州 粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -189,12 +424,42 @@
         {
           "name": "红蛋 · 元/斤",
           "rows": [
-            {"spec": "周口大蛋(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "驻马店大码(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "商丘(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "三门峡(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "信阳(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "安阳(元/斤)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "周口大蛋(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "驻马店大码(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "商丘(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "三门峡(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "信阳(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "安阳(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -213,14 +478,54 @@
         {
           "name": "北京市场 · 44斤/箱 · 元/箱",
           "rows": [
-            {"spec": "北京主流参考(44斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "大洋路", "yesterday": null, "today": null, "change": null},
-            {"spec": "新发地", "yesterday": null, "today": null, "change": null},
-            {"spec": "回龙观", "yesterday": null, "today": null, "change": null},
-            {"spec": "顺义石门", "yesterday": null, "today": null, "change": null},
-            {"spec": "昌平", "yesterday": null, "today": null, "change": null},
-            {"spec": "锦绣大地", "yesterday": null, "today": null, "change": null},
-            {"spec": "水屯市场", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "北京主流参考(44斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "大洋路",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "新发地",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "回龙观",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "顺义石门",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "昌平",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "锦绣大地",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "水屯市场",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -239,8 +544,18 @@
         {
           "name": "红蛋 · 元/斤+元/箱",
           "rows": [
-            {"spec": "终端市场批发(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "正旭鲜蛋(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "终端市场批发(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "正旭鲜蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -259,7 +574,12 @@
         {
           "name": "绿壳蛋 · 360枚/箱 · 元/斤",
           "rows": [
-            {"spec": "绿壳蛋(40斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "绿壳蛋(40斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -278,7 +598,12 @@
         {
           "name": "粉蛋 · 45斤/箱 · 元/箱",
           "rows": [
-            {"spec": "粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -297,8 +622,18 @@
         {
           "name": "蛋品 · 元/箱",
           "rows": [
-            {"spec": "褐壳大蛋(40斤/箱)", "yesterday": null, "today": null, "change": null},
-            {"spec": "饶阳粉蛋(45斤/箱)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "褐壳大蛋(40斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "饶阳粉蛋(45斤/箱)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -317,9 +652,24 @@
         {
           "name": "山西鸡蛋 · 元/斤",
           "rows": [
-            {"spec": "山西均价(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "稷山(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "运城(元/斤)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "山西均价(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "稷山(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "运城(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -338,15 +688,60 @@
         {
           "name": "豆粕 · 元/斤",
           "rows": [
-            {"spec": "北京(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "上海(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "山东(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "河南(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "河北(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "辽宁(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "江苏(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "山西(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "湖北(元/斤)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "北京(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "上海(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "山东(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "河南(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "河北(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "辽宁(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "江苏(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "山西(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "湖北(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
@@ -365,8 +760,18 @@
         {
           "name": "全国鸡蛋均价 · 元/斤",
           "rows": [
-            {"spec": "全国主产区均价(元/斤)", "yesterday": null, "today": null, "change": null},
-            {"spec": "全国主销区均价(元/斤)", "yesterday": null, "today": null, "change": null}
+            {
+              "spec": "全国主产区均价(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            },
+            {
+              "spec": "全国主销区均价(元/斤)",
+              "yesterday": null,
+              "today": null,
+              "change": null
+            }
           ]
         }
       ],
