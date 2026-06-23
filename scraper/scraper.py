@@ -16,6 +16,7 @@ import re
 import os
 import sys
 import time
+import subprocess
 import urllib.parse
 from datetime import datetime, timezone, timedelta
 
@@ -391,11 +392,38 @@ class PlaywrightScraper:
         self.page = None
 
     def start(self):
-        self.pw = sync_playwright().start()
-        self.browser = self.pw.chromium.launch(
-            headless=True,
-            args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-        )
+        try:
+            self.pw = sync_playwright().start()
+            self.browser = self.pw.chromium.launch(
+                headless=True,
+                args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+            )
+        except Exception as e:
+            safe_print(f"[playwright] browser launch failed: {e}")
+            safe_print("[playwright] installing chromium browser binary...")
+            try:
+                subprocess.check_call(
+                    [sys.executable, '-m', 'playwright', 'install', 'chromium'],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120
+                )
+                safe_print("[playwright] chromium installed, trying system deps...")
+                try:
+                    subprocess.check_call(
+                        ['sudo', sys.executable, '-m', 'playwright', 'install-deps', 'chromium'],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120
+                    )
+                except:
+                    safe_print("[playwright] system deps skipped (may still work)")
+            except Exception as e2:
+                safe_print(f"[playwright] browser install failed: {e2}")
+                raise
+            # Retry launch after install
+            self.pw = sync_playwright().start()
+            self.browser = self.pw.chromium.launch(
+                headless=True,
+                args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+            )
+
         self.context = self.browser.new_context(
             viewport={'width': 1920, 'height': 1080},
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
