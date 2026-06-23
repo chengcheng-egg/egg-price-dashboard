@@ -146,6 +146,22 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 /* Note */
 .qc-note{padding:7px 14px;font-size:10px;color:var(--text3);line-height:1.6;background:rgba(0,0,0,.1);border-top:1px solid rgba(30,58,82,.2)}
 
+/* Article metadata bar (公众号文章信息) */
+.qc-article-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;background:rgba(255,107,53,.06);border-top:1px solid rgba(255,107,53,.12);border-bottom:1px solid rgba(255,107,53,.12);font-size:10px;gap:8px}
+.qc-article-bar.empty{display:none}
+.qc-article-title{color:var(--accent);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qc-article-meta{color:var(--text3);font-size:9.5px;white-space:nowrap;flex-shrink:0}
+.qc-article-link{color:var(--text3);text-decoration:none;font-size:9.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:color .2s}
+.qc-article-link:hover{color:var(--accent)}
+.qc-article-bar.pending{background:rgba(100,116,139,.06);border-color:rgba(100,116,139,.12)}
+.qc-article-bar.pending .qc-article-title{color:var(--text3);font-weight:400}
+
+/* Scrape status badge */
+.scrape-status{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.scrape-status .ss-dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+.scrape-status.pending .ss-dot{background:#f59e0b}
+.scrape-status .ss-time{color:var(--text2);font-weight:500}
+
 /* Update time bar */
 .qc-update-bar{display:flex;align-items:center;justify-content:space-between;padding:5px 14px;border-top:1px solid rgba(30,58,82,.25);font-size:10px;color:var(--text3);background:rgba(0,0,0,.08)}
 .qc-update-bar .ub-label{display:flex;align-items:center;gap:4px;color:var(--text3)}
@@ -236,6 +252,10 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   <div class="header-right">
     <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)">
       <div class="update-dot"></div>已更新
+    </div>
+    <div class="scrape-status" id="scrapeStatus">
+      <div class="ss-dot"></div>
+      <span class="ss-time" id="scrapeTime">等待数据...</span>
     </div>
     <button class="hdr-btn" onclick="exportData()">📤 导出数据</button>
     <button class="hdr-btn" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
@@ -1634,6 +1654,277 @@ function showToast(msg, type='info'){
 // ============ Close modal on overlay click ============
 document.getElementById('editModal').addEventListener('click', function(e){
   if(e.target===this) closeModal();
+});
+
+// ============ 远程数据加载（prices.json） ============
+// 从 data/prices.json 加载自动抓取的公众号报价数据，覆盖硬编码值
+// 如果加载失败，保留 HTML 中的硬编码数据作为 fallback
+
+function formatChangeVal(val) {
+  if (val === null || val === undefined) return '—';
+  if (val === 0) return '持平';
+  if (val > 0) return '▲' + val;
+  return '▼' + Math.abs(val);
+}
+
+function getChangeClass(val) {
+  if (val === null || val === undefined) return '';
+  if (val > 0) return 'change-up';
+  if (val < 0) return 'change-down';
+  return 'change-flat';
+}
+
+function formatDateDisplay(dateStr, timeStr) {
+  if (!dateStr) return '暂无录入';
+  const today = new Date();
+  const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.getFullYear() + '-' + String(yesterday.getMonth()+1).padStart(2,'0') + '-' + String(yesterday.getDate()).padStart(2,'0');
+  
+  let prefix = '';
+  let cls = 'old';
+  if (dateStr === todayStr) { prefix = '今日'; cls = 'today'; }
+  else if (dateStr === yStr) { prefix = '昨日'; cls = 'yesterday'; }
+  else {
+    // 格式化为 "6月22日"
+    const parts = dateStr.split('-');
+    prefix = parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+  }
+  const timePart = timeStr ? ' ' + timeStr : '';
+  return { text: prefix + timePart, cls: cls };
+}
+
+function updateScrapeStatus(data) {
+  const el = document.getElementById('scrapeStatus');
+  const timeEl = document.getElementById('scrapeTime');
+  if (!el || !timeEl) return;
+  
+  if (!data || !data.lastScrapeTime) {
+    el.classList.add('pending');
+    timeEl.textContent = '无自动数据';
+    return;
+  }
+  
+  el.classList.remove('pending');
+  const dt = new Date(data.lastScrapeTime);
+  const now = new Date();
+  const diffMin = Math.floor((now - dt) / 60000);
+  
+  let timeText;
+  if (diffMin < 1) timeText = '刚刚更新';
+  else if (diffMin < 60) timeText = diffMin + '分钟前';
+  else if (diffMin < 1440) timeText = Math.floor(diffMin/60) + '小时前';
+  else timeText = Math.floor(diffMin/1440) + '天前';
+  
+  const status = data.lastScrapeStatus || '';
+  timeEl.textContent = '自动抓取: ' + timeText;
+  
+  if (status.includes('failed') && !status.includes('success')) {
+    el.classList.add('pending');
+  }
+}
+
+function addArticleBar(card, source) {
+  // 移除旧的文章栏
+  const oldBar = card.querySelector('.qc-article-bar');
+  if (oldBar) oldBar.remove();
+  
+  const article = source.article;
+  const bar = document.createElement('div');
+  bar.className = 'qc-article-bar';
+  
+  if (!article || !article.title) {
+    bar.classList.add('pending');
+    bar.innerHTML = '<span class="qc-article-title">⏳ 等待公众号发布 / 抓取中</span>';
+  } else {
+    bar.classList.remove('pending');
+    const dateInfo = formatDateDisplay(article.date, article.time);
+    let metaText = '';
+    if (article.date) {
+      metaText = dateInfo.text;
+    }
+    if (article.source) {
+      metaText += (metaText ? ' · ' : '') + article.source;
+    }
+    
+    let linkHtml = '';
+    if (article.url) {
+      linkHtml = `<a class="qc-article-link" href="${article.url}" target="_blank" rel="noopener">查看原文 →</a>`;
+    }
+    
+    bar.innerHTML = `
+      <span class="qc-article-title" title="${article.title}">📰 ${article.title}</span>
+      <span class="qc-article-meta">${metaText}</span>
+      ${linkHtml}
+    `;
+  }
+  
+  // 插入到 qc-note 之前
+  const note = card.querySelector('.qc-note');
+  if (note) {
+    note.parentNode.insertBefore(bar, note);
+  } else {
+    card.appendChild(bar);
+  }
+}
+
+function updateCardFromData(key, source) {
+  const card = document.getElementById('card-' + key);
+  if (!card) return;
+  
+  // 1. 添加/更新文章信息栏
+  addArticleBar(card, source);
+  
+  // 2. 更新价格表格
+  if (source.groups && source.groups.length > 0) {
+    const tables = card.querySelectorAll('.qc-table tbody');
+    let groupIdx = 0;
+    
+    source.groups.forEach(group => {
+      if (groupIdx >= tables.length) return;
+      const tbody = tables[groupIdx];
+      if (!tbody) return;
+      
+      group.rows.forEach(rowData => {
+        // 在 tbody 中查找匹配的行（通过第一列文本匹配）
+        const rows = tbody.querySelectorAll('tr');
+        for (const tr of rows) {
+          const firstCell = tr.querySelector('td:first-child');
+          if (!firstCell) continue;
+          const cellText = firstCell.textContent.trim();
+          
+          // 匹配逻辑：包含关键词
+          const spec = rowData.spec || '';
+          const isMatch = cellText === spec ||
+                          cellText.includes(spec) ||
+                          spec.includes(cellText) ||
+                          cellText.replace(/[（(].*?[）)]/g, '').trim() === spec.replace(/[（(].*?[）)]/g, '').trim();
+          
+          if (isMatch) {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= 4) {
+              // 昨日
+              cells[1].textContent = rowData.yesterday !== null ? rowData.yesterday : '—';
+              cells[1].className = 'price';
+              // 今日
+              cells[2].textContent = rowData.today !== null ? rowData.today : '—';
+              cells[2].className = 'price' + (groupIdx === 0 && cells[0] === tr.querySelector('td:first-child') ? ' price-hot' : '');
+              // 涨跌
+              cells[3].textContent = formatChangeVal(rowData.change);
+              cells[3].className = getChangeClass(rowData.change);
+            }
+            break;
+          }
+        }
+      });
+      
+      groupIdx++;
+    });
+  }
+  
+  // 3. 更新备注
+  if (source.note) {
+    const noteEl = card.querySelector('.qc-note');
+    if (noteEl) {
+      noteEl.innerHTML = '📌 ' + source.note;
+    }
+  }
+  
+  // 4. 更新时间栏
+  const ubar = card.querySelector('.ub-time');
+  if (ubar && source.article && source.article.date) {
+    const dateInfo = formatDateDisplay(source.article.date, source.article.time);
+    ubar.className = 'ub-time ' + dateInfo.cls;
+    ubar.textContent = dateInfo.text;
+  }
+  
+  // 5. 更新顶部日期标签
+  const dateTag = card.querySelector('.qc-date-tag');
+  if (dateTag && source.article && source.article.date) {
+    const dateInfo = formatDateDisplay(source.article.date, source.article.time);
+    dateTag.className = 'qc-date-tag ' + dateInfo.cls;
+    dateTag.textContent = dateInfo.text;
+  }
+  
+  // 6. 同步到 localStorage（让快速录入也能看到最新日期）
+  if (source.article && source.article.date) {
+    const rawDate = source.article.date;
+    const parts = rawDate.split('-');
+    const displayDate = parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+    saveTimeData(key, displayDate, source.article.time || '');
+  }
+}
+
+function updateStatsBar(data) {
+  // 更新顶部统计栏中的馆陶价格
+  if (data.sources && data.sources.guantao && data.sources.guantao.groups) {
+    const guantaoGroup = data.sources.guantao.groups[0];
+    if (guantaoGroup && guantaoGroup.rows && guantaoGroup.rows[0]) {
+      const row = guantaoGroup.rows[0];
+      const statEl = document.getElementById('s-guantao');
+      if (statEl && row.today !== null) {
+        statEl.textContent = row.today;
+      }
+      const chgEl = statEl ? statEl.nextElementSibling : null;
+      if (chgEl && row.change !== null) {
+        chgEl.textContent = row.change > 0 ? '▲' + row.change : (row.change < 0 ? '▼' + Math.abs(row.change) : '— 持平');
+        chgEl.className = row.change > 0 ? 'stat-chg change-up' : (row.change < 0 ? 'stat-chg change-down' : 'stat-chg change-flat');
+        chgEl.style.color = row.change > 0 ? 'var(--up)' : (row.change < 0 ? 'var(--down)' : 'var(--flat)');
+      }
+    }
+  }
+}
+
+async function loadRemoteData() {
+  try {
+    const response = await fetch('data/prices.json', { cache: 'no-store' });
+    if (!response.ok) {
+      console.log('prices.json 不可用，使用硬编码数据');
+      return;
+    }
+    const data = await response.json();
+    window.remotePriceData = data;
+    
+    // 更新顶部抓取状态
+    updateScrapeStatus(data);
+    
+    // 更新每张卡片
+    let updatedCount = 0;
+    if (data.sources) {
+      for (const [key, source] of Object.entries(data.sources)) {
+        updateCardFromData(key, source);
+        if (source.status === 'updated') updatedCount++;
+      }
+    }
+    
+    // 更新统计栏
+    updateStatsBar(data);
+    
+    // 刷新日期标签
+    refreshAllDateTags();
+    
+    console.log(`远程数据加载完成: ${updatedCount} 个源已更新`);
+    
+    // 显示 toast
+    if (updatedCount > 0) {
+      showToast(`自动抓取: ${updatedCount} 个公众号已更新`, 'success');
+    }
+  } catch (e) {
+    console.log('远程数据加载失败，使用硬编码数据:', e.message);
+    const el = document.getElementById('scrapeStatus');
+    if (el) {
+      el.classList.add('pending');
+      const timeEl = document.getElementById('scrapeTime');
+      if (timeEl) timeEl.textContent = '使用本地数据';
+    }
+  }
+}
+
+// 页面加载完成后尝试加载远程数据
+window.addEventListener('DOMContentLoaded', function() {
+  // 延迟 500ms 加载，确保页面先渲染完
+  setTimeout(loadRemoteData, 500);
 });
 </script>
 </body>
