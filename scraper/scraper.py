@@ -391,22 +391,25 @@ class PlaywrightScraper:
         self.context = None
         self.page = None
 
-    def start(self):
-        try:
-            self.pw = sync_playwright().start()
-            self.browser = self.pw.chromium.launch(
-                headless=True,
-                args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-            )
-        except Exception as e:
-            safe_print(f"[playwright] browser launch failed: {e}")
-            safe_print("[playwright] installing chromium browser binary...")
+    def _ensure_browser(self):
+        """Install Chromium browser BEFORE any Playwright API calls to avoid event loop conflicts"""
+        from pathlib import Path
+        cache_dir = Path.home() / '.cache' / 'ms-playwright'
+        browser_found = False
+        if cache_dir.exists():
+            for item in cache_dir.iterdir():
+                if 'chromium' in item.name.lower():
+                    browser_found = True
+                    break
+
+        if not browser_found:
+            safe_print("[playwright] chromium not found, installing browser binary...")
             try:
                 subprocess.check_call(
                     [sys.executable, '-m', 'playwright', 'install', 'chromium'],
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120
                 )
-                safe_print("[playwright] chromium installed, trying system deps...")
+                safe_print("[playwright] chromium installed, installing system deps...")
                 try:
                     subprocess.check_call(
                         ['sudo', sys.executable, '-m', 'playwright', 'install-deps', 'chromium'],
@@ -414,16 +417,22 @@ class PlaywrightScraper:
                     )
                 except:
                     safe_print("[playwright] system deps skipped (may still work)")
-            except Exception as e2:
-                safe_print(f"[playwright] browser install failed: {e2}")
-                raise
-            # Retry launch after install
-            self.pw = sync_playwright().start()
-            self.browser = self.pw.chromium.launch(
-                headless=True,
-                args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-            )
+            except Exception as e:
+                safe_print(f"[playwright] browser install failed: {e}")
+                return False
+        else:
+            safe_print("[playwright] chromium browser already installed")
+        return True
 
+    def start(self):
+        # Install browser BEFORE any Playwright API calls
+        self._ensure_browser()
+
+        self.pw = sync_playwright().start()
+        self.browser = self.pw.chromium.launch(
+            headless=True,
+            args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        )
         self.context = self.browser.new_context(
             viewport={'width': 1920, 'height': 1080},
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
