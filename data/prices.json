@@ -1,6 +1,6 @@
 {
-  "lastScrapeTime": "2026-07-19T10:19:00.467193+08:00",
-  "lastScrapeStatus": "success:0, failed:15",
+  "lastScrapeTime": "2026-07-19T14:35:24.808356+08:00",
+  "lastScrapeStatus": "success:1, failed:14",
   "sources": {
     "guantao": {
       "name": "河北馆陶鸡蛋报价",
@@ -9,84 +9,25 @@
       "color": "pink",
       "region": "河北邯郸馆陶",
       "category": "粉蛋核心",
-      "status": "pending",
+      "status": "updated",
       "article": {
-        "title": "【河北馆陶鸡蛋报价】2026年6月22日 跌！",
-        "date": "2026-06-22",
-        "time": "15:24",
-        "url": "https://www.boyar.cn/article/1259709.html",
-        "source": "boyar.cn"
+        "title": "",
+        "date": null,
+        "time": null,
+        "url": "https://top.baidu.com/board?platform=pc&sa=pcindex_a_right",
+        "source": "baidu"
       },
-      "trend": "跌",
-      "trendValue": -4,
+      "trend": null,
+      "trendValue": null,
       "groups": [
         {
-          "name": "精品菜花黄蛋托（粉蛋）· 360枚/箱 · 元/箱",
+          "name": "",
           "rows": [
             {
-              "spec": "45斤",
-              "yesterday": 192,
-              "today": 188,
-              "change": -4
-            },
-            {
-              "spec": "44斤",
-              "yesterday": 190,
-              "today": 186,
-              "change": -4
-            },
-            {
-              "spec": "43斤",
-              "yesterday": 188,
-              "today": 184,
-              "change": -4
-            },
-            {
-              "spec": "42斤",
-              "yesterday": 186,
-              "today": 182,
-              "change": -4
-            },
-            {
-              "spec": "41斤",
-              "yesterday": 184,
-              "today": 180,
-              "change": -4
-            }
-          ]
-        },
-        {
-          "name": "草绿蛋托（粉蛋）",
-          "rows": [
-            {
-              "spec": "40–41斤",
-              "yesterday": 185,
-              "today": 181,
-              "change": -4
-            },
-            {
-              "spec": "38–39斤",
-              "yesterday": 179,
-              "today": 175,
-              "change": -4
-            },
-            {
-              "spec": "36–37斤",
-              "yesterday": 173,
-              "today": 169,
-              "change": -4
-            },
-            {
-              "spec": "33–35斤",
-              "yesterday": 160,
-              "today": 156,
-              "change": -4
-            },
-            {
-              "spec": "30–32斤",
-              "yesterday": 155,
-              "today": 151,
-              "change": -4
+              "spec": "510斤",
+              "today": 15,
+              "yesterday": null,
+              "change": null
             }
           ]
         }
