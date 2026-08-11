@@ -1,6 +1,6 @@
 {
-  "lastScrapeTime": "2026-08-11T13:10:35.615475+08:00",
-  "lastScrapeStatus": "success:0, failed:15",
+  "lastScrapeTime": "2026-08-11T15:05:03.745441+08:00",
+  "lastScrapeStatus": "success:1, failed:14",
   "sources": {
     "guantao": {
       "name": "河北馆陶鸡蛋报价",
@@ -9,7 +9,7 @@
       "color": "pink",
       "region": "河北邯郸馆陶",
       "category": "粉蛋核心",
-      "status": "pending",
+      "status": "updated",
       "article": {
         "title": "",
         "date": null,
@@ -24,8 +24,8 @@
           "name": "",
           "rows": [
             {
-              "spec": "510斤",
-              "today": 15,
+              "spec": "20斤",
+              "today": 10,
               "yesterday": null,
               "change": null
             }
