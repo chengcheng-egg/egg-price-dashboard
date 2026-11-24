@@ -1,6 +1,6 @@
 {
-  "lastScrapeTime": "2026-11-24T16:08:01.681853+08:00",
-  "lastScrapeStatus": "success:0, failed:15",
+  "lastScrapeTime": "2026-11-25T04:32:59.185591+08:00",
+  "lastScrapeStatus": "success:1, failed:14",
   "sources": {
     "guantao": {
       "name": "河北馆陶鸡蛋报价",
@@ -9,12 +9,12 @@
       "color": "pink",
       "region": "河北邯郸馆陶",
       "category": "粉蛋核心",
-      "status": "pending",
+      "status": "updated",
       "article": {
         "title": "",
         "date": null,
         "time": null,
-        "url": "https://top.baidu.com/board?platform=pc&sa=pcindex_a_right",
+        "url": "https://top.baidu.com/board?tab=homepage&sa=pcindex_a_right&source=r_bangdan_searcha",
         "source": "baidu"
       },
       "trend": null,
@@ -24,8 +24,8 @@
           "name": "",
           "rows": [
             {
-              "spec": "88斤",
-              "today": 13,
+              "spec": "12斤",
+              "today": 389,
               "yesterday": null,
               "change": null
             }
